@@ -1,0 +1,118 @@
+#!/bin/bash
+# Runs the same two-stage PDMS eval pipeline used to originally report the
+# 87.2 checkpoint's score (inference/vla/infer_navsim_flow_matching_PDMS_87.2.sh
+# + eval_navsim_metric_from_json.sh), but restricted to the disjoint trainval
+# held-out subset (tools/rl_prep/build_eval_subset_pkl.py) instead of the full
+# navtest split — see docs/rl_world_model_design.md 阶段 2.
+#
+# Run once per checkpoint you want to compare. EVAL_EMU_HUB must point to a
+# directory that directly contains config.json + the safetensors shards —
+# for a baseline checkpoint that's the checkpoint dir itself, but for an RL
+# run it's a specific step_XXXXXX subdirectory under RL_CHECKPOINT_DIR
+# (rl_stage1_prototype.py saves each save-point separately), NOT the
+# RL_CHECKPOINT_DIR root — pointing at the root will fail (no config.json
+# there). Always give each checkpoint its own EVAL_EXPERIMENT_NAME so
+# outputs never collide across runs:
+#   EVAL_EMU_HUB=$REPO_ROOT/pretrained_models/DriveVLA-W0/Emu3_Flow_Matching_Action_Expert_PDMS_87.2 \
+#     EVAL_EXPERIMENT_NAME=before_rl_trainval_eval \
+#     sbatch scripts/hpc/submit_eval_subset.slurm
+#   for STEP in 000100 000200 000300 000400; do
+#     EVAL_EMU_HUB=$REPO_ROOT/pretrained_models/DriveVLA-W0/<RL_CHECKPOINT_DIR>/step_${STEP} \
+#       EVAL_EXPERIMENT_NAME=<label>_step_${STEP} \
+#       sbatch scripts/hpc/submit_eval_subset.slurm
+#   done
+# Always evaluate the *whole* checkpoint curve (every save-point), not just
+# the final step — 阶段 2/3 both found the interesting behavior mid-training,
+# not at the end.
+#
+# Prerequisite (one-time): build the held-out eval subset —
+#   RL_CACHE_TARGET=eval python tools/rl_prep/cache_trainval_rl_scenes.py   (navsim env)
+#   python tools/rl_prep/build_eval_subset_pkl.py                          (drivevla env)
+
+#SBATCH --job-name=eval_subset
+#SBATCH --account=xinxia0
+#SBATCH --partition=gpu-rtx6000
+#SBATCH --gres=gpu:rtx_pro_6000_blackwell:1
+#SBATCH --nodes=1
+#SBATCH --ntasks-per-node=1
+#SBATCH --cpus-per-task=16
+# Stage B (run_pdm_score.py) uses Ray to score proposals across many parallel
+# workers, each loading its own metric-cache/simulator state — much more
+# memory-hungry than the metric-caching pass; 32g OOM-killed it partway
+# through the 286-scene "Ray objects" phase, bumped generously.
+#SBATCH --mem=96g
+#SBATCH --time=04:00:00
+# Set notification email at submission time if desired.
+#SBATCH --output=/home/%u/%x-%j.log
+#SBATCH --error=/home/%u/%x-%j.err
+
+set -euo pipefail
+
+: "${EVAL_EMU_HUB:?must set EVAL_EMU_HUB to the checkpoint dir to evaluate}"
+: "${EVAL_EXPERIMENT_NAME:?must set EVAL_EXPERIMENT_NAME (e.g. before_rl_trainval_eval / after_rl_trainval_eval)}"
+
+REPO_ROOT="$HOME/DriveVLA-W0"
+
+module load python3.10-anaconda/2023.03
+module load cuda/12.8.1
+source "$(conda info --base)/etc/profile.d/conda.sh"
+cd "$REPO_ROOT"
+
+nvidia-smi --query-gpu=name,memory.total --format=csv
+
+# ---------------------------------------------------------------------------
+# Stage A (drivevla env): inference on the held-out subset -> per-token JSON
+# ---------------------------------------------------------------------------
+conda activate drivevla
+export PATH="$CONDA_PREFIX/bin:$PATH"
+
+export VLA_ACTION_TOKENIZER="$REPO_ROOT/pretrained_models/fast"
+export VLA_VLM_MODEL="$REPO_ROOT/pretrained_models/Emu3-Stage1"
+export VLA_NORM_STATS="$REPO_ROOT/configs/normalizer_navsim_trainval/norm_stats.json"
+# Remaps the original authors' absolute VQ-code paths (baked into the pkl's
+# image-path strings) to where this repo actually keeps them locally — same
+# mapping submit_rl_stage1.slurm exports, needed by utils/datasets.py for any
+# script that loads VQ-coded images, not just training.
+export VLA_PATH_REPLACEMENTS="/mnt/vdb1/yingyan.li/repo/VLA/data/navsim/processed_data/:$REPO_ROOT/data/navsim/processed_data/data/navsim/processed_data/;/mnt/vdb1/shuyao.shang/VLA_Emu_Huawei/data/navsim/processed_data/:$REPO_ROOT/data/navsim/processed_data/data/navsim/processed_data/;/mnt/nvme0n1p1/yingyan.li/repo/VLA_Emu_Huawei/data/navsim/processed_data/:$REPO_ROOT/data/navsim/processed_data/data/navsim/processed_data/"
+# utils/datasets.py holds the bare `datasets` module imported by
+# utils/train_pi0.py (`from datasets import Emu3SFTDataset`) — needs
+# $REPO_ROOT/utils itself on path, not just $REPO_ROOT (config.py's
+# setup_paths_early() only adds train/ and reference/Emu3/, not this one).
+export PYTHONPATH="$REPO_ROOT/inference/navsim/navsim:$REPO_ROOT/utils:$REPO_ROOT:${PYTHONPATH:-}"
+
+STAGE_A_OUTPUT="$REPO_ROOT/output/${EVAL_EXPERIMENT_NAME}"
+
+echo "=== [1/2] Stage A inference (drivevla env), checkpoint=$EVAL_EMU_HUB ==="
+# torchrun默认绑定 29500 端口做 rendezvous —— 多个 eval job 如果被 SLURM
+# 分到同一个物理节点(不同 GPU,共享网络命名空间)会互相撞端口
+# (EADDRINUSE)。用 job ID 派生一个各自独立的端口。
+MASTER_PORT=$((20000 + SLURM_JOB_ID % 10000))
+torchrun --nproc_per_node=1 --master_port="$MASTER_PORT" inference/vla/inference_action_navsim_flow_matching_vava.py \
+    --emu_hub "$EVAL_EMU_HUB" \
+    --output_dir "$STAGE_A_OUTPUT" \
+    --test_data_pkl "$REPO_ROOT/pretrained_models/DriveVLA-W0/navsim_emu_vla_256_144_trainval_rl_eval_pre_1s.pkl" \
+    --token_yaml "$REPO_ROOT/data/navsim/processed_data/scene_files/scene_filter/trainval_rl_eval.yaml"
+
+# ---------------------------------------------------------------------------
+# Stage B (navsim env): score those predictions against the held-out
+# metric_cache, restricted to the same token subset
+# ---------------------------------------------------------------------------
+conda activate navsim
+export PATH="$CONDA_PREFIX/bin:$PATH"
+
+export NUPLAN_MAP_VERSION="nuplan-maps-v1.0"
+export NUPLAN_MAPS_ROOT="$REPO_ROOT/navsim_data/maps"
+export NAVSIM_EXP_ROOT="$REPO_ROOT/navsim_data/exp"
+export NAVSIM_DEVKIT_ROOT="$REPO_ROOT/inference/navsim/navsim"
+export OPENSCENE_DATA_ROOT="$REPO_ROOT/navsim_data"
+export PYTHONPATH="$NAVSIM_DEVKIT_ROOT:${PYTHONPATH:-}"
+
+echo "=== [2/2] Stage B PDM scoring (navsim env) ==="
+python tools/rl_prep/eval_pdm_score_subset.py \
+    --experiment-path "$STAGE_A_OUTPUT" \
+    --experiment-name "$EVAL_EXPERIMENT_NAME" \
+    --metric-cache-path "$NAVSIM_EXP_ROOT/metric_cache_trainval_rl_eval" \
+    --subset-tokens-json "$REPO_ROOT/data/navsim/processed_data/anchor/trainval_rl_eval_tokens_cached.json" \
+    --train-test-split trainval
+
+echo "=== 完成 ==="

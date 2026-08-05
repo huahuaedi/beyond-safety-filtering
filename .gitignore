@@ -1,4 +1,11 @@
 pretrained_models
+navsim_data/
+output/
+experiments/
+checkpoints/
+cuda-keyring_*.deb
+*.tgz
+*.tar.gz
 *.pyc
 logs
 __pycache__
