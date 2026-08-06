@@ -5,7 +5,7 @@
 # ~96GB) — plenty of headroom for AdamW + KL + larger group sizes, unlike the
 # 24GB local card or the 16GB V100s on this same cluster (--partition=gpu).
 
-#SBATCH --job-name=drivevla_ref_anchor_v1
+#SBATCH --job-name=drivevla_ref_anchor_v2
 #SBATCH --account=xinxia0
 #SBATCH --partition=gpu-rtx6000
 #SBATCH --gres=gpu:rtx_pro_6000_blackwell:1
@@ -72,8 +72,9 @@ export NAVSIM_METRIC_CACHE_PATH="$REPO_ROOT/navsim_data/exp/metric_cache_trainva
 # 需要真的能加载这份权重，不是只看训练日志里的 reward/kl 数字。每 RL_SAVE_EVERY 步存
 # 一次独立子目录(rl_stage1_prototype.py 现在按 step_XXXXXX 分开存，不会互相覆盖)。
 # ---------------------------------------------------------------------------
-export RL_CHECKPOINT_DIR="$REPO_ROOT/pretrained_models/DriveVLA-W0/reference_anchored_v1"
+export RL_CHECKPOINT_DIR="$REPO_ROOT/pretrained_models/DriveVLA-W0/reference_anchored_v2"
 export RL_SAVE_EVERY=25
+export RL_SAVE_STEPS=10,25,40,50
 
 # ---------------------------------------------------------------------------
 # RL 训练超参。诊断历史(见 docs/rl_world_model_design.md 阶段 2-3):
@@ -83,10 +84,10 @@ export RL_SAVE_EVERY=25
 #   run3 (400步，navsim_score_worker.py `train_reward` 字段，TTC:progress 从
 #     官方 5:5 改成 8:2 加权): 只是换了兑换比率，安全项依然能被 progress 补偿，
 #     不是真正的修法。
-# v4 Safety-Gated GRPO 在 held-out 上继续退化，训练 stochastic safe_frac
-# 与部署 ODE 轨迹安全不一致。本轮 v5 使用同场景 frozen SFT ODE 轨迹作为
-# reference anchor；policy ODE 轨迹若相对 reference 退化，则关闭该步 progress
-# 更新并触发 velocity-field rollback。先跑 50 步 Gate，不直接投入 400 步。
+# V1 step25 首次超过 baseline (0.9263)，但 step50 因尾部安全漂移降到
+# 0.9139。V2 使用两个稳定的 per-scene deployment probes，缓存 frozen
+# reference 分数；风险事件除即时 rollback 外，还触发持续衰减的 adaptive KL
+# 和 RL update 降速，目标是保住 step25 的 EP 增益并稳定到 step50。
 # ---------------------------------------------------------------------------
 export RL_GROUP_SIZE=16
 export RL_NUM_STEPS=50
@@ -97,5 +98,8 @@ export RL_LR=1e-5
 export RL_OPTIMIZER=adamw
 export RL_ADVANTAGE_MODE=reference_anchored
 export RL_ROLLBACK_COEF=1.0
+export RL_DEPLOYMENT_PROBES=2
+export RL_KL_BOOST=3.0
+export RL_KL_DECAY=0.9
 
 srun python tools/rl_prep/rl_stage1_prototype.py

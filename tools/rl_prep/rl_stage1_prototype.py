@@ -25,6 +25,7 @@ reference snapshot and reuse the single frozen VLM's layers for both.
 This is a prototype for validating plumbing, not a tuned training recipe.
 """
 import copy
+import hashlib
 import json
 import os
 import pickle
@@ -109,6 +110,9 @@ KL_COEF = float(os.environ.get("RL_KL_COEF", 0.5))
 LR = float(os.environ.get("RL_LR", 1e-5))
 ADVANTAGE_MODE = os.environ.get("RL_ADVANTAGE_MODE", "safety_gated")
 ROLLBACK_COEF = float(os.environ.get("RL_ROLLBACK_COEF", 1.0))
+DEPLOYMENT_PROBES = int(os.environ.get("RL_DEPLOYMENT_PROBES", 1))
+KL_BOOST = float(os.environ.get("RL_KL_BOOST", 3.0))
+KL_DECAY = float(os.environ.get("RL_KL_DECAY", 0.9))
 
 # Where to write trained weights, for a real before/after PDMS comparison
 # (阶段 2) — empty string skips saving entirely (e.g. short mechanics-only
@@ -119,6 +123,9 @@ ROLLBACK_COEF = float(os.environ.get("RL_ROLLBACK_COEF", 1.0))
 # — a complete, directly loadable checkpoint in the same format as EMU_HUB.
 CHECKPOINT_DIR = os.environ.get("RL_CHECKPOINT_DIR", "")
 SAVE_EVERY = int(os.environ.get("RL_SAVE_EVERY", 200))
+SAVE_STEPS = {
+    int(x) for x in os.environ.get("RL_SAVE_STEPS", "").split(",") if x.strip()
+}
 
 ANCHOR_METRIC_KEYS = [
     "no_at_fault_collisions",
@@ -143,6 +150,18 @@ def relative_to_absolute_se2(rel_traj: np.ndarray) -> np.ndarray:
         yaw = (yaw + dyaw + np.pi) % (2 * np.pi) - np.pi
         abs_traj[i] = [x, y, yaw]
     return abs_traj
+
+
+def fixed_scene_latent(scene_token: str, probe_idx: int, action_frames: int, action_dim: int):
+    """Stable per-scene deployment probe. Python's hash() is process-randomized,
+    so use SHA-256 to make local/HPC runs and reference-cache entries identical."""
+    digest = hashlib.sha256(f"{scene_token}:deployment_probe:{probe_idx}".encode()).digest()
+    seed = int.from_bytes(digest[:8], "little") % (2**31)
+    generator = torch.Generator(device=DEVICE)
+    generator.manual_seed(seed)
+    return torch.randn(
+        1, action_frames, action_dim, generator=generator, device=DEVICE, dtype=DTYPE
+    )
 
 
 @dataclass
@@ -601,7 +620,11 @@ def main():
     cluster = np.load(CLUSTER_PATH)  # [8192, 8, 3] absolute SE2
     cluster_flat = cluster.reshape(cluster.shape[0], -1)
 
-    print(f"REWARD_SOURCE={REWARD_SOURCE} ADVANTAGE_MODE={ADVANTAGE_MODE} ROLLBACK_COEF={ROLLBACK_COEF}", flush=True)
+    print(
+        f"REWARD_SOURCE={REWARD_SOURCE} ADVANTAGE_MODE={ADVANTAGE_MODE} "
+        f"ROLLBACK_COEF={ROLLBACK_COEF} DEPLOYMENT_PROBES={DEPLOYMENT_PROBES} "
+        f"KL_BOOST={KL_BOOST} KL_DECAY={KL_DECAY}", flush=True,
+    )
     if ADVANTAGE_MODE == "reference_anchored" and REWARD_SOURCE != "navsim":
         raise ValueError("reference_anchored mode currently requires RL_REWARD_SOURCE=navsim")
     anchor_scores = None
@@ -640,6 +663,11 @@ def main():
     sigma = NOISE_STD * (abs(dt) ** 0.5)
 
     reward_history = []
+    # Reference heads never change. With stable per-scene probe latents, their
+    # NAVSIM vector scores are immutable and can be cached after first use.
+    reference_score_cache = {}
+    adaptive_kl_multiplier = 1.0
+    risk_event_count = 0
 
     for step_i in range(NUM_STEPS):
         idx = random.choice(usable_indices)
@@ -673,31 +701,62 @@ def main():
 
         if REWARD_SOURCE == "navsim":
             if ADVANTAGE_MODE == "reference_anchored":
-                # ODE deployment paths: same initial latent, no transition
-                # noise.  This isolates changes in the learned velocity field
-                # from exploration noise and directly checks the path used at
-                # inference time.
-                deployment_z = torch.randn(
-                    1, action_frames, action_dim, device=DEVICE, dtype=DTYPE
-                )
-                current_det, current_det_steps, det_vlm_seq_len = rollout_and_score(
-                    policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
-                    action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0, initial_z=deployment_z,
-                )
-                reference_det, _, _ = rollout_and_score(
-                    policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
-                    action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0, initial_z=deployment_z,
-                )
-                extra_abs = np.zeros((2, action_frames, action_dim), dtype=np.float32)
-                for extra_i, z_final in enumerate((current_det, reference_det)):
+                token = scene["token"]
+                current_probe_finals, current_probe_steps = [], []
+                probe_vlm_seq_lens = []
+                reference_finals, missing_reference_indices = [], []
+                cache_hit = token in reference_score_cache
+
+                for probe_idx in range(DEPLOYMENT_PROBES):
+                    deployment_z = fixed_scene_latent(token, probe_idx, action_frames, action_dim)
+                    current_final, det_steps, det_seq_len = rollout_and_score(
+                        policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
+                        action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
+                        initial_z=deployment_z,
+                    )
+                    current_probe_finals.append(current_final)
+                    current_probe_steps.append(det_steps)
+                    probe_vlm_seq_lens.append(det_seq_len)
+                    if not cache_hit:
+                        reference_final, _, _ = rollout_and_score(
+                            policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
+                            action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
+                            initial_z=deployment_z,
+                        )
+                        reference_finals.append(reference_final)
+                        missing_reference_indices.append(probe_idx)
+
+                extra_finals = current_probe_finals + reference_finals
+                extra_abs = np.zeros((len(extra_finals), action_frames, action_dim), dtype=np.float32)
+                for extra_i, z_final in enumerate(extra_finals):
                     rel_raw = 0.5 * (z_final[0].float().cpu().numpy() + 1.0) * (high - low) + low
                     extra_abs[extra_i] = relative_to_absolute_se2(rel_raw)
                 all_scores = score_with_navsim_simulator(
-                    scene["token"], np.concatenate([abs_trajs, extra_abs], axis=0)
+                    token, np.concatenate([abs_trajs, extra_abs], axis=0)
                 )
                 sub_scores = {k: v[:GROUP_SIZE] for k, v in all_scores.items()}
-                current_det_scores = {k: float(v[GROUP_SIZE]) for k, v in all_scores.items()}
-                reference_scores = {k: float(v[GROUP_SIZE + 1]) for k, v in all_scores.items()}
+                current_probe_scores = [
+                    {k: float(v[GROUP_SIZE + probe_idx]) for k, v in all_scores.items()}
+                    for probe_idx in range(DEPLOYMENT_PROBES)
+                ]
+                if not cache_hit:
+                    ref_offset = GROUP_SIZE + DEPLOYMENT_PROBES
+                    reference_score_cache[token] = [
+                        {k: float(v[ref_offset + probe_idx]) for k, v in all_scores.items()}
+                        for probe_idx in range(DEPLOYMENT_PROBES)
+                    ]
+                reference_probe_scores = reference_score_cache[token]
+
+                # Candidate feasibility uses the conservative safety envelope
+                # across fixed reference probes; utility uses their mean.
+                reference_scores = {
+                    k: (
+                        max(x[k] for x in reference_probe_scores)
+                        if k in ("no_at_fault_collisions", "drivable_area_compliance", "time_to_collision_within_bound")
+                        else float(np.mean([x[k] for x in reference_probe_scores]))
+                    )
+                    for k in SUB_SCORE_KEYS
+                }
             else:
                 # One subprocess call scores the whole group — real PDM simulator,
                 # not limited to the fixed 8192-anchor vocabulary.
@@ -712,16 +771,32 @@ def main():
 
         if ADVANTAGE_MODE == "reference_anchored":
             adv, is_safe, violation = compute_reference_anchored_advantage(sub_scores, reference_scores)
-            det_violation = (
-                max(0.0, reference_scores["no_at_fault_collisions"] - current_det_scores["no_at_fault_collisions"])
-                + max(0.0, reference_scores["drivable_area_compliance"] - current_det_scores["drivable_area_compliance"])
-                + max(0.0, reference_scores["time_to_collision_within_bound"] - current_det_scores["time_to_collision_within_bound"])
-            )
+            probe_regrets = []
+            for current_scores, ref_scores in zip(current_probe_scores, reference_probe_scores):
+                nc_regret = max(0.0, ref_scores["no_at_fault_collisions"] - current_scores["no_at_fault_collisions"])
+                dac_regret = max(0.0, ref_scores["drivable_area_compliance"] - current_scores["drivable_area_compliance"])
+                ttc_regret = max(0.0, ref_scores["time_to_collision_within_bound"] - current_scores["time_to_collision_within_bound"])
+                probe_regrets.append((nc_regret + dac_regret + ttc_regret, nc_regret, dac_regret, ttc_regret))
+            worst_probe_idx = int(np.argmax([x[0] for x in probe_regrets]))
+            det_violation, det_nc_regret, det_dac_regret, det_ttc_regret = probe_regrets[worst_probe_idx]
+            if det_violation > 0.0:
+                adaptive_kl_multiplier = KL_BOOST
+                risk_event_count += 1
+            else:
+                adaptive_kl_multiplier = 1.0 + KL_DECAY * (adaptive_kl_multiplier - 1.0)
         else:
             adv, is_safe = compute_safety_gated_advantage(sub_scores)
             violation = np.zeros(GROUP_SIZE, dtype=np.float32)
             det_violation = 0.0
-        rl_weight = 0.0 if (ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0) else 1.0
+            det_nc_regret = det_dac_regret = det_ttc_regret = 0.0
+            adaptive_kl_multiplier = 1.0
+            worst_probe_idx = 0
+            cache_hit = False
+        effective_kl_coef = KL_COEF * adaptive_kl_multiplier
+        if ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0:
+            rl_weight = 0.0
+        else:
+            rl_weight = 1.0 / adaptive_kl_multiplier
 
         # ---- phase 2: gradient-accumulate the per-sample REINFORCE (+ KL)
         # loss across the group, one sample at a time, then a single
@@ -747,7 +822,7 @@ def main():
                 log_ratio_mean = log_ratio_mean.clamp(-20.0, 20.0)
                 ratio = torch.exp(log_ratio_mean)
                 kl_g = (ratio - 1) - log_ratio_mean
-                loss_g = pg_loss_g + KL_COEF * kl_g
+                loss_g = pg_loss_g + effective_kl_coef * kl_g
                 kl_sum += kl_g.item()
             else:
                 loss_g = pg_loss_g
@@ -758,7 +833,8 @@ def main():
         if ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0:
             rollback_loss = reference_path_rollback_loss(
                 policy, policy_heads, ref_heads, input_ids_1, attention_mask_1,
-                pre_action_1, cmd_1, current_det_steps, det_vlm_seq_len,
+                pre_action_1, cmd_1, current_probe_steps[worst_probe_idx],
+                probe_vlm_seq_lens[worst_probe_idx],
             )
             (ROLLBACK_COEF * det_violation * rollback_loss).backward()
             rollback_value = float(rollback_loss.item())
@@ -775,14 +851,18 @@ def main():
             f"safe_frac={safe_frac:.4f} ttc_mean={ttc_mean:.4f} progress_mean={progress_mean:.4f} "
             f"adv_mean={adv.mean():.4f} adv_std={adv.std():.4f} "
             f"pg_loss={pg_loss_sum / GROUP_SIZE:.4f} kl={kl_sum / GROUP_SIZE:.4f} "
-            f"rl_weight={rl_weight:.1f} det_violation={det_violation:.4f} rollback={rollback_value:.6f} "
-            f"ref_ttc={reference_scores['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
-            f"det_ttc={current_det_scores['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
+            f"rl_weight={rl_weight:.4f} kl_mult={adaptive_kl_multiplier:.4f} effective_kl={effective_kl_coef:.4f} "
+            f"det_violation={det_violation:.4f} det_nc_regret={det_nc_regret:.4f} "
+            f"det_dac_regret={det_dac_regret:.4f} det_ttc_regret={det_ttc_regret:.4f} "
+            f"rollback={rollback_value:.6f} risk_events={risk_event_count} cache_hit={int(cache_hit)} "
+            f"ref_ttc={reference_probe_scores[worst_probe_idx]['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
+            f"det_ttc={current_probe_scores[worst_probe_idx]['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
             f"grad_norm={grad_norm:.4f}",
             flush=True,
         )
 
-        if CHECKPOINT_DIR and (step_i + 1) % SAVE_EVERY == 0:
+        should_save = (step_i + 1) in SAVE_STEPS or ((step_i + 1) % SAVE_EVERY == 0)
+        if CHECKPOINT_DIR and should_save:
             # Separate subdirectory per step — a single shared path would
             # have each save silently overwrite the previous one, losing
             # every intermediate checkpoint needed to see *where* along

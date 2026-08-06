@@ -114,3 +114,5 @@ debug_output/
 
 *.pyc
 .vscode/
+
+hpc_artifacts/
