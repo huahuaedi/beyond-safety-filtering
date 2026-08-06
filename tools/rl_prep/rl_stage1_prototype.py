@@ -107,6 +107,8 @@ NOISE_STD = float(os.environ.get("RL_NOISE_STD", 0.1))         # ReinFlow-style 
 # new (much smaller) per-element scale, not comparable to the old 0.05.
 KL_COEF = float(os.environ.get("RL_KL_COEF", 0.5))
 LR = float(os.environ.get("RL_LR", 1e-5))
+ADVANTAGE_MODE = os.environ.get("RL_ADVANTAGE_MODE", "safety_gated")
+ROLLBACK_COEF = float(os.environ.get("RL_ROLLBACK_COEF", 1.0))
 
 # Where to write trained weights, for a real before/after PDMS comparison
 # (阶段 2) — empty string skips saving entirely (e.g. short mechanics-only
@@ -246,7 +248,7 @@ def denoise_step_velocity(heads: ActionHeads, vlm_h, state_token_embedding, z, t
 
 
 def rollout_and_score(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_mask, pre_action, cmd,
-                       action_frames, action_dim, num_steps, noise_std):
+                       action_frames, action_dim, num_steps, noise_std, initial_z=None):
     """No-grad rollout using the policy's current heads. Returns the per-step
     (z_t -> z_{t+dt}) transitions needed to later recompute log-probs with
     grad, plus the final denoised action."""
@@ -259,7 +261,9 @@ def rollout_and_score(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_
         state_input = torch.cat([pre_action.reshape(batch_size, -1), cmd], dim=1)
         state_token_embedding = heads.state_projector(state_input).unsqueeze(1)
 
-        z = torch.randn(batch_size, action_frames, action_dim, device=input_ids.device, dtype=vlm_h.dtype)
+        z = initial_z.clone() if initial_z is not None else torch.randn(
+            batch_size, action_frames, action_dim, device=input_ids.device, dtype=vlm_h.dtype
+        )
         dt = -1.0 / num_steps
         sigma = noise_std * (abs(dt) ** 0.5)
 
@@ -278,6 +282,36 @@ def rollout_and_score(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_
             t += dt
 
     return z, steps, vlm_seq_len
+
+
+def reference_path_rollback_loss(policy: Emu3Pi0, policy_heads: ActionHeads, ref_heads: ActionHeads,
+                                 input_ids, attention_mask, pre_action, cmd, steps, vlm_seq_len):
+    """Pull the deployed zero-transition-noise ODE path back toward the frozen
+    SFT velocity field after NAVSIM detects a reference-relative safety
+    regression.  Unlike the global KL, this is activated only on a scene whose
+    current deployment trajectory is less safe than its own SFT reference."""
+    batch_size = input_ids.shape[0]
+    vlm_h = policy.vlm.model.embed_tokens(input_ids)
+    vlm_position_ids = torch.arange(vlm_seq_len, device=input_ids.device).unsqueeze(0).expand(batch_size, -1)
+    state_input = torch.cat([pre_action.reshape(batch_size, -1), cmd], dim=1)
+    policy_state = policy_heads.state_projector(state_input).unsqueeze(1)
+    with torch.no_grad():
+        ref_state = ref_heads.state_projector(state_input).unsqueeze(1)
+
+    losses = []
+    for step in steps:
+        z, t = step["z"], step["t"]
+        policy_velocity = denoise_step_velocity(
+            policy_heads, vlm_h, policy_state, z, t, input_ids, attention_mask,
+            vlm_position_ids, vlm_seq_len, batch_size,
+        )
+        with torch.no_grad():
+            ref_velocity = denoise_step_velocity(
+                ref_heads, vlm_h, ref_state, z, t, input_ids, attention_mask,
+                vlm_position_ids, vlm_seq_len, batch_size,
+            )
+        losses.append(torch.mean((policy_velocity.float() - ref_velocity.float()) ** 2))
+    return torch.stack(losses).mean()
 
 
 def recompute_log_prob(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_mask, pre_action, cmd,
@@ -465,6 +499,59 @@ def compute_safety_gated_advantage(sub_scores: dict) -> np.ndarray:
     return adv, is_safe
 
 
+def compute_reference_anchored_advantage(sub_scores: dict, reference_scores: dict):
+    """Lexicographic group advantage relative to the frozen SFT policy on the
+    same scene.  NC/DAC/TTC are NAVSIM binary feasibility indicators, so no
+    progress gain may compensate for dropping any indicator below reference.
+    Feasible candidates compete on progress/DDC; infeasible candidates remain
+    negative and are ordered by total reference-relative violation."""
+    nc = sub_scores["no_at_fault_collisions"]
+    dac = sub_scores["drivable_area_compliance"]
+    ttc = sub_scores["time_to_collision_within_bound"]
+    progress = (
+        sub_scores["ego_progress"]
+        + 0.25 * sub_scores["driving_direction_compliance"]
+    )
+    ref_nc = float(reference_scores["no_at_fault_collisions"])
+    ref_dac = float(reference_scores["drivable_area_compliance"])
+    ref_ttc = float(reference_scores["time_to_collision_within_bound"])
+    ref_utility = float(reference_scores["ego_progress"]) + 0.25 * float(
+        reference_scores["driving_direction_compliance"]
+    )
+
+    violation = (
+        np.maximum(0.0, ref_nc - nc)
+        + np.maximum(0.0, ref_dac - dac)
+        + np.maximum(0.0, ref_ttc - ttc)
+    )
+    feasible = violation <= 1e-8
+    adv = np.zeros(len(nc), dtype=np.float32)
+    n_feasible = int(feasible.sum())
+
+    if n_feasible >= 2:
+        improvement = progress[feasible] - ref_utility
+        mu, sigma = improvement.mean(), improvement.std() + 1e-6
+        adv[feasible] = (improvement - mu) / sigma
+        # Severity ordering keeps a recovery signal while guaranteeing every
+        # reference-regressing candidate stays below every feasible one.
+        if (~feasible).any():
+            bad = violation[~feasible]
+            scaled = bad / (bad.max() + 1e-6)
+            adv[~feasible] = -1.0 - scaled
+        adv -= adv.mean()
+    elif n_feasible == 1:
+        adv[feasible] = 1.0
+        if (~feasible).any():
+            bad = violation[~feasible]
+            adv[~feasible] = -1.0 - bad / (bad.max() + 1e-6)
+        adv -= adv.mean()
+    else:
+        mu, sigma = violation.mean(), violation.std() + 1e-6
+        adv = -(violation - mu) / sigma
+
+    return adv.astype(np.float32), feasible, violation.astype(np.float32)
+
+
 def main():
     random.seed(0)
     np.random.seed(0)
@@ -493,6 +580,8 @@ def main():
         ref_heads = build_frozen_reference_heads(policy)
     else:
         print("RL_KL_COEF=0, skipping reference snapshot to save memory.", flush=True)
+    if ADVANTAGE_MODE == "reference_anchored" and ref_heads is None:
+        raise ValueError("reference_anchored mode requires RL_KL_COEF > 0 to build frozen reference heads")
     print(f"GPU memory after setup: {torch.cuda.memory_allocated() / 1e9:.2f} GB allocated", flush=True)
 
     # Default AdamW now that we're not squeezed onto a 24GB card (AdamW's
@@ -512,7 +601,9 @@ def main():
     cluster = np.load(CLUSTER_PATH)  # [8192, 8, 3] absolute SE2
     cluster_flat = cluster.reshape(cluster.shape[0], -1)
 
-    print(f"REWARD_SOURCE={REWARD_SOURCE}", flush=True)
+    print(f"REWARD_SOURCE={REWARD_SOURCE} ADVANTAGE_MODE={ADVANTAGE_MODE} ROLLBACK_COEF={ROLLBACK_COEF}", flush=True)
+    if ADVANTAGE_MODE == "reference_anchored" and REWARD_SOURCE != "navsim":
+        raise ValueError("reference_anchored mode currently requires RL_REWARD_SOURCE=navsim")
     anchor_scores = None
     navsim_scene_tokens = None
     if REWARD_SOURCE == "navsim":
@@ -581,9 +672,36 @@ def main():
             abs_trajs[g] = relative_to_absolute_se2(rel_raw)
 
         if REWARD_SOURCE == "navsim":
-            # One subprocess call scores the whole group — real PDM simulator,
-            # not limited to the fixed 8192-anchor vocabulary.
-            sub_scores = score_with_navsim_simulator(scene["token"], abs_trajs)
+            if ADVANTAGE_MODE == "reference_anchored":
+                # ODE deployment paths: same initial latent, no transition
+                # noise.  This isolates changes in the learned velocity field
+                # from exploration noise and directly checks the path used at
+                # inference time.
+                deployment_z = torch.randn(
+                    1, action_frames, action_dim, device=DEVICE, dtype=DTYPE
+                )
+                current_det, current_det_steps, det_vlm_seq_len = rollout_and_score(
+                    policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
+                    action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0, initial_z=deployment_z,
+                )
+                reference_det, _, _ = rollout_and_score(
+                    policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
+                    action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0, initial_z=deployment_z,
+                )
+                extra_abs = np.zeros((2, action_frames, action_dim), dtype=np.float32)
+                for extra_i, z_final in enumerate((current_det, reference_det)):
+                    rel_raw = 0.5 * (z_final[0].float().cpu().numpy() + 1.0) * (high - low) + low
+                    extra_abs[extra_i] = relative_to_absolute_se2(rel_raw)
+                all_scores = score_with_navsim_simulator(
+                    scene["token"], np.concatenate([abs_trajs, extra_abs], axis=0)
+                )
+                sub_scores = {k: v[:GROUP_SIZE] for k, v in all_scores.items()}
+                current_det_scores = {k: float(v[GROUP_SIZE]) for k, v in all_scores.items()}
+                reference_scores = {k: float(v[GROUP_SIZE + 1]) for k, v in all_scores.items()}
+            else:
+                # One subprocess call scores the whole group — real PDM simulator,
+                # not limited to the fixed 8192-anchor vocabulary.
+                sub_scores = score_with_navsim_simulator(scene["token"], abs_trajs)
         else:
             sub_scores = {k: np.zeros(GROUP_SIZE, dtype=np.float32) for k in ANCHOR_METRIC_KEYS}
             for g in range(GROUP_SIZE):
@@ -592,7 +710,18 @@ def main():
                 for k in ANCHOR_METRIC_KEYS:
                     sub_scores[k][g] = stacked[k][nearest]
 
-        adv, is_safe = compute_safety_gated_advantage(sub_scores)
+        if ADVANTAGE_MODE == "reference_anchored":
+            adv, is_safe, violation = compute_reference_anchored_advantage(sub_scores, reference_scores)
+            det_violation = (
+                max(0.0, reference_scores["no_at_fault_collisions"] - current_det_scores["no_at_fault_collisions"])
+                + max(0.0, reference_scores["drivable_area_compliance"] - current_det_scores["drivable_area_compliance"])
+                + max(0.0, reference_scores["time_to_collision_within_bound"] - current_det_scores["time_to_collision_within_bound"])
+            )
+        else:
+            adv, is_safe = compute_safety_gated_advantage(sub_scores)
+            violation = np.zeros(GROUP_SIZE, dtype=np.float32)
+            det_violation = 0.0
+        rl_weight = 0.0 if (ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0) else 1.0
 
         # ---- phase 2: gradient-accumulate the per-sample REINFORCE (+ KL)
         # loss across the group, one sample at a time, then a single
@@ -603,7 +732,7 @@ def main():
         for g in range(GROUP_SIZE):
             steps, vlm_seq_len = rollouts[g]
             logp_policy = recompute_log_prob(policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1, steps, sigma, vlm_seq_len)
-            pg_loss_g = -(float(adv[g]) * logp_policy).mean()
+            pg_loss_g = -rl_weight * (float(adv[g]) * logp_policy).mean()
             if ref_heads is not None:
                 with torch.no_grad():
                     logp_ref = recompute_log_prob(policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1, steps, sigma, vlm_seq_len)
@@ -625,6 +754,15 @@ def main():
             (loss_g / GROUP_SIZE).backward()
             pg_loss_sum += pg_loss_g.item()
 
+        rollback_value = 0.0
+        if ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0:
+            rollback_loss = reference_path_rollback_loss(
+                policy, policy_heads, ref_heads, input_ids_1, attention_mask_1,
+                pre_action_1, cmd_1, current_det_steps, det_vlm_seq_len,
+            )
+            (ROLLBACK_COEF * det_violation * rollback_loss).backward()
+            rollback_value = float(rollback_loss.item())
+
         grad_norm = torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=1.0)
         optimizer.step()
 
@@ -636,7 +774,11 @@ def main():
             f"step {step_i:03d} scene={scene['token']} "
             f"safe_frac={safe_frac:.4f} ttc_mean={ttc_mean:.4f} progress_mean={progress_mean:.4f} "
             f"adv_mean={adv.mean():.4f} adv_std={adv.std():.4f} "
-            f"pg_loss={pg_loss_sum / GROUP_SIZE:.4f} kl={kl_sum / GROUP_SIZE:.4f} grad_norm={grad_norm:.4f}",
+            f"pg_loss={pg_loss_sum / GROUP_SIZE:.4f} kl={kl_sum / GROUP_SIZE:.4f} "
+            f"rl_weight={rl_weight:.1f} det_violation={det_violation:.4f} rollback={rollback_value:.6f} "
+            f"ref_ttc={reference_scores['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
+            f"det_ttc={current_det_scores['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
+            f"grad_norm={grad_norm:.4f}",
             flush=True,
         )
 
