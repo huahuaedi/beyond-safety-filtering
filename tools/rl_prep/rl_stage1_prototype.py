@@ -39,6 +39,24 @@ import numpy as np
 import torch
 import torch.utils.checkpoint
 
+from risk_curriculum import (
+    parse_source_mix,
+    select_curriculum_memory,
+    tempered_priority_weights,
+)
+from rollout_diagnostics import compute_rollout_diagnostics
+from policy_optimization import (
+    shrinkage_centered_advantage,
+    update_adaptive_kl_coefficient,
+)
+from adaptive_reward import validate_constraint_weights
+from build_pseudo_control_sidecars import estimate_pseudo_controls
+from trajectory_dynamics import analyze_pose_trajectories
+from waypoint_control_adapter import WaypointControlAdapter
+from differentiable_vehicle_model import VehicleModelConfig
+from continuous_scene_outcome_critic import ContinuousSceneOutcomeCritic
+from unified_correction_policy import UnifiedCorrectionPolicy, apply_verified_correction
+
 REPO_ROOT = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPO_ROOT / "inference" / "vla"))  # for `config` module
 sys.path.insert(0, str(REPO_ROOT / "utils"))
@@ -94,11 +112,18 @@ NAVSIM_WORKER_SCRIPT = REPO_ROOT / "tools/rl_prep/navsim_score_worker.py"
 
 DEVICE = "cuda" if torch.cuda.is_available() else "cpu"
 DTYPE = torch.bfloat16
+SEED = int(os.environ.get("RL_SEED", 0))
 
 GROUP_SIZE = int(os.environ.get("RL_GROUP_SIZE", 8))          # G in GRPO
+ROLLOUT_MICRO_BATCH = int(os.environ.get("RL_ROLLOUT_MICRO_BATCH", 1))
+if ROLLOUT_MICRO_BATCH < 1:
+    raise ValueError("RL_ROLLOUT_MICRO_BATCH must be >= 1")
 NUM_STEPS = int(os.environ.get("RL_NUM_STEPS", 20))            # policy update steps
 NUM_INFERENCE_STEPS = int(os.environ.get("RL_DENOISE_STEPS", 10))
 NOISE_STD = float(os.environ.get("RL_NOISE_STD", 0.1))         # ReinFlow-style per-step noise scale
+DIAGNOSTICS = os.environ.get("RL_DIAGNOSTICS", "0") == "1"
+DIAGNOSTIC_TRAJECTORY_EPS = float(os.environ.get("RL_DIAGNOSTIC_TRAJECTORY_EPS", 0.05))
+DIAGNOSTIC_SCORE_EPS = float(os.environ.get("RL_DIAGNOSTIC_SCORE_EPS", 1e-4))
 # KL_COEF now multiplies a *per-element* (per denoise-step, per action-dim)
 # k3 estimate (see http://joschu.net/blog/kl-approx.html), not the raw summed
 # log-ratio — the summed version scales with NUM_INFERENCE_STEPS*action_frames*
@@ -107,12 +132,66 @@ NOISE_STD = float(os.environ.get("RL_NOISE_STD", 0.1))         # ReinFlow-style 
 # overflow if ever exponentiated. 0.5 here is a fresh starting point at the
 # new (much smaller) per-element scale, not comparable to the old 0.05.
 KL_COEF = float(os.environ.get("RL_KL_COEF", 0.5))
+ADVANTAGE_NOISE_FLOOR = float(os.environ.get("RL_ADVANTAGE_NOISE_FLOOR", 0.0))
+ADAPTIVE_KL = os.environ.get("RL_ADAPTIVE_KL", "0") == "1"
+TARGET_KL = float(os.environ.get("RL_TARGET_KL", 5e-4))
+KL_ADAPTATION_RATE = float(os.environ.get("RL_KL_ADAPTATION_RATE", 0.1))
+KL_COEF_MIN = float(os.environ.get("RL_KL_COEF_MIN", 0.05))
+KL_COEF_MAX = float(os.environ.get("RL_KL_COEF_MAX", 5.0))
+KL_HARD_LIMIT = float(os.environ.get("RL_KL_HARD_LIMIT", 0.0))
 LR = float(os.environ.get("RL_LR", 1e-5))
 ADVANTAGE_MODE = os.environ.get("RL_ADVANTAGE_MODE", "safety_gated")
 ROLLBACK_COEF = float(os.environ.get("RL_ROLLBACK_COEF", 1.0))
 DEPLOYMENT_PROBES = int(os.environ.get("RL_DEPLOYMENT_PROBES", 1))
 KL_BOOST = float(os.environ.get("RL_KL_BOOST", 3.0))
 KL_DECAY = float(os.environ.get("RL_KL_DECAY", 0.9))
+RISK_BUFFER_SIZE = int(os.environ.get("RL_RISK_BUFFER_SIZE", 32))
+RISK_REPLAY_EVERY = int(os.environ.get("RL_RISK_REPLAY_EVERY", 1))
+RISK_REPLAY_COEF = float(os.environ.get("RL_RISK_REPLAY_COEF", 1.0))
+RISK_EXPOSURE_THRESHOLD = float(os.environ.get("RL_RISK_EXPOSURE_THRESHOLD", 0.05))
+RISK_REPLAY_SAMPLING = os.environ.get("RL_RISK_REPLAY_SAMPLING", "priority").lower()
+RISK_MANIFEST = os.environ.get("RL_RISK_MANIFEST", "")
+RISK_COVERAGE_MANIFEST = os.environ.get("RL_RISK_COVERAGE_MANIFEST", "")
+RISK_ONLINE_INSERT = os.environ.get("RL_RISK_ONLINE_INSERT", "1") == "1"
+RISK_CURRICULUM = os.environ.get("RL_RISK_CURRICULUM", "0") == "1"
+RISK_SOURCE_MIX_SPEC = os.environ.get(
+    "RL_RISK_SOURCE_MIX", "manifest:0.5,coverage:0.25,online:0.25"
+)
+RISK_TYPE_BALANCE = os.environ.get("RL_RISK_TYPE_BALANCE", "1") == "1"
+RISK_REDUNDANCY_COEF = float(os.environ.get("RL_RISK_REDUNDANCY_COEF", 0.25))
+RISK_PRIORITY_POWER = float(os.environ.get("RL_RISK_PRIORITY_POWER", 1.0))
+DYNAMIC_CONSTRAINT_WEIGHTS = os.environ.get("RL_DYNAMIC_CONSTRAINT_WEIGHTS", "0") == "1"
+DYNAMIC_WEIGHT_MIN = float(os.environ.get("RL_DYNAMIC_WEIGHT_MIN", 0.5))
+DYNAMIC_WEIGHT_MAX = float(os.environ.get("RL_DYNAMIC_WEIGHT_MAX", 2.0))
+RISK_SOURCE_MIX = parse_source_mix(RISK_SOURCE_MIX_SPEC)
+if RISK_REDUNDANCY_COEF < 0:
+    raise ValueError("RL_RISK_REDUNDANCY_COEF must be >= 0")
+if RISK_PRIORITY_POWER < 0:
+    raise ValueError("RL_RISK_PRIORITY_POWER must be >= 0")
+if not 0.0 < DYNAMIC_WEIGHT_MIN <= 1.0 <= DYNAMIC_WEIGHT_MAX:
+    raise ValueError("dynamic weight bounds must satisfy 0 < min <= 1 <= max")
+if RISK_REPLAY_SAMPLING not in {"priority", "uniform"}:
+    raise ValueError(
+        "RL_RISK_REPLAY_SAMPLING must be 'priority' or 'uniform', got "
+        f"{RISK_REPLAY_SAMPLING!r}"
+    )
+if ADVANTAGE_NOISE_FLOOR < 0:
+    raise ValueError("RL_ADVANTAGE_NOISE_FLOOR must be >= 0")
+if ADAPTIVE_KL and not (TARGET_KL > 0 and KL_ADAPTATION_RATE >= 0):
+    raise ValueError("adaptive KL requires RL_TARGET_KL > 0 and RL_KL_ADAPTATION_RATE >= 0")
+if not 0 < KL_COEF_MIN <= KL_COEF_MAX:
+    raise ValueError("KL coefficient bounds must satisfy 0 < min <= max")
+if KL_HARD_LIMIT < 0:
+    raise ValueError("RL_KL_HARD_LIMIT must be >= 0")
+COLLECT_ONLY = os.environ.get("RL_COLLECT_ONLY", "0") == "1"
+COLLECTION_DIR = os.environ.get("RL_COLLECTION_DIR", "")
+COLLECTION_SHARD_ID = int(os.environ.get("RL_COLLECTION_SHARD_ID", 0))
+COLLECTION_NUM_SHARDS = int(os.environ.get("RL_COLLECTION_NUM_SHARDS", 1))
+if COLLECTION_NUM_SHARDS < 1 or not 0 <= COLLECTION_SHARD_ID < COLLECTION_NUM_SHARDS:
+    raise ValueError(
+        "collection shard must satisfy 0 <= RL_COLLECTION_SHARD_ID < "
+        f"RL_COLLECTION_NUM_SHARDS, got {COLLECTION_SHARD_ID}/{COLLECTION_NUM_SHARDS}"
+    )
 
 # Where to write trained weights, for a real before/after PDMS comparison
 # (阶段 2) — empty string skips saving entirely (e.g. short mechanics-only
@@ -126,6 +205,31 @@ SAVE_EVERY = int(os.environ.get("RL_SAVE_EVERY", 200))
 SAVE_STEPS = {
     int(x) for x in os.environ.get("RL_SAVE_STEPS", "").split(",") if x.strip()
 }
+CONTROL_ADAPTER_CHECKPOINT = os.environ.get("RL_CONTROL_ADAPTER_CHECKPOINT", "")
+CONTROL_ADAPTER_MODE = os.environ.get("RL_CONTROL_ADAPTER_MODE", "infeasible_only")
+CONTROL_ADAPTER_MAX_POSITION_RMSE = float(
+    os.environ.get("RL_CONTROL_ADAPTER_MAX_POSITION_RMSE", "inf")
+)
+UNIFIED_CORRECTION_CHECKPOINT = os.environ.get(
+    "RL_UNIFIED_CORRECTION_CHECKPOINT", ""
+)
+UNIFIED_OUTCOME_CHECKPOINT = os.environ.get("RL_UNIFIED_OUTCOME_CHECKPOINT", "")
+UNIFIED_LATENT_ROOT = Path(os.environ.get(
+    "RL_UNIFIED_LATENT_ROOT",
+    REPO_ROOT / "navsim_data/exp/world_action_latents_full_v1",
+))
+UNIFIED_CORRECTION_LOGP_COEF = float(
+    os.environ.get("RL_UNIFIED_CORRECTION_LOGP_COEF", 1.0)
+)
+if bool(UNIFIED_CORRECTION_CHECKPOINT) != bool(UNIFIED_OUTCOME_CHECKPOINT):
+    raise ValueError(
+        "RL_UNIFIED_CORRECTION_CHECKPOINT and RL_UNIFIED_OUTCOME_CHECKPOINT "
+        "must be set together"
+    )
+if UNIFIED_CORRECTION_CHECKPOINT and CONTROL_ADAPTER_CHECKPOINT:
+    raise ValueError("unified correction and the legacy control adapter are mutually exclusive")
+if CONTROL_ADAPTER_MODE not in ("infeasible_only", "all"):
+    raise ValueError("RL_CONTROL_ADAPTER_MODE must be infeasible_only or all")
 
 ANCHOR_METRIC_KEYS = [
     "no_at_fault_collisions",
@@ -162,6 +266,16 @@ def fixed_scene_latent(scene_token: str, probe_idx: int, action_frames: int, act
     return torch.randn(
         1, action_frames, action_dim, generator=generator, device=DEVICE, dtype=DTYPE
     )
+
+
+def stable_scene_split(scene_token: str) -> str:
+    """Deterministic scene-disjoint 80/10/10 split for world-action data."""
+    bucket = int.from_bytes(hashlib.sha256(scene_token.encode()).digest()[:8], "little") % 100
+    if bucket < 80:
+        return "train"
+    if bucket < 90:
+        return "val"
+    return "test"
 
 
 @dataclass
@@ -226,7 +340,8 @@ def freeze_vlm(policy: Emu3Pi0):
 
 
 def denoise_step_velocity(heads: ActionHeads, vlm_h, state_token_embedding, z, t_scalar,
-                           input_ids, attention_mask, vlm_position_ids, vlm_seq_len, batch_size):
+                           input_ids, attention_mask, vlm_position_ids, vlm_seq_len, batch_size,
+                           return_vlm_context=False):
     """Reproduces the per-step computation inside Emu3Pi0.sample_actions, exposed
     so we can call it either under no_grad (rollout) or with grad (log-prob
     recomputation for the policy-gradient loss)."""
@@ -263,11 +378,16 @@ def denoise_step_velocity(heads: ActionHeads, vlm_h, state_token_embedding, z, t
             )
     final_action_hidden_for_decode = heads.action_expert_norm(current_action_h)
     velo_t_pred = heads.action_decoder(final_action_hidden_for_decode[:, 1:, :], tau_emb_expanded)
+    if return_vlm_context:
+        mask = attention_mask.to(current_vlm_h.dtype).unsqueeze(-1)
+        pooled_vlm = (current_vlm_h * mask).sum(1) / mask.sum(1).clamp_min(1.0)
+        return velo_t_pred, pooled_vlm
     return velo_t_pred
 
 
 def rollout_and_score(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_mask, pre_action, cmd,
-                       action_frames, action_dim, num_steps, noise_std, initial_z=None):
+                       action_frames, action_dim, num_steps, noise_std, initial_z=None,
+                       transition_noise=None):
     """No-grad rollout using the policy's current heads. Returns the per-step
     (z_t -> z_{t+dt}) transitions needed to later recompute log-probs with
     grad, plus the final denoised action."""
@@ -287,20 +407,60 @@ def rollout_and_score(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_
         sigma = noise_std * (abs(dt) ** 0.5)
 
         steps = []
+        noise_i = 0
         t = 1.0
         while t >= -dt / 2:
-            velo = denoise_step_velocity(
+            velo, contextual_vlm = denoise_step_velocity(
                 heads, vlm_h, state_token_embedding, z, t,
                 input_ids, attention_mask, vlm_position_ids, vlm_seq_len, batch_size,
+                return_vlm_context=True,
             )
             mean = z + dt * velo
-            eps = torch.randn_like(z)
+            eps = (
+                transition_noise[noise_i]
+                if transition_noise is not None
+                else torch.randn_like(z)
+            )
+            if eps.shape != z.shape:
+                raise ValueError(
+                    f"transition noise must match z={tuple(z.shape)}, got {tuple(eps.shape)}"
+                )
             z_next = mean + sigma * eps
             steps.append({"t": t, "z": z, "z_next": z_next, "_dt": dt})
             z = z_next
             t += dt
+            noise_i += 1
+
+        if steps:
+            steps[-1]["vlm_context"] = contextual_vlm.detach()
+
+        if transition_noise is not None and noise_i != len(transition_noise):
+            raise ValueError(
+                f"received {len(transition_noise)} transition noises, consumed {noise_i}"
+            )
 
     return z, steps, vlm_seq_len
+
+
+def split_batched_rollout(final_z, steps, vlm_seq_len):
+    """Return batch-size-one records consumed by the unchanged grad loop."""
+    records = []
+    for batch_i in range(final_z.shape[0]):
+        member_steps = [
+            {
+                "t": step["t"],
+                "z": step["z"][batch_i:batch_i + 1],
+                "z_next": step["z_next"][batch_i:batch_i + 1],
+                "_dt": step["_dt"],
+                **(
+                    {"vlm_context": step["vlm_context"][batch_i:batch_i + 1]}
+                    if "vlm_context" in step else {}
+                ),
+            }
+            for step in steps
+        ]
+        records.append((final_z[batch_i:batch_i + 1], member_steps, vlm_seq_len))
+    return records
 
 
 def reference_path_rollback_loss(policy: Emu3Pi0, policy_heads: ActionHeads, ref_heads: ActionHeads,
@@ -331,6 +491,43 @@ def reference_path_rollback_loss(policy: Emu3Pi0, policy_heads: ActionHeads, ref
             )
         losses.append(torch.mean((policy_velocity.float() - ref_velocity.float()) ** 2))
     return torch.stack(losses).mean()
+
+
+def correction_path_rollback_loss(
+    correction_policy,
+    reference_correction_policy,
+    outcome_critic,
+    proposal_waypoints,
+    wm_context,
+    vlm_context,
+):
+    """Safety-only rehearsal for the correction half of the joint policy.
+
+    Risk-memory scenes pull the correction distribution (gate and residual
+    control mean) back to its frozen initialization on the same frozen
+    reference proposal. This closes the previous rehearsal asymmetry where
+    only the waypoint Action Expert received a rollback gradient.
+    """
+    with torch.no_grad():
+        risk = outcome_critic.outcomes(
+            proposal_waypoints.flatten(-2), wm_context
+        )["risk"]
+        reference = reference_correction_policy(
+            proposal_waypoints, risk, wm_context, vlm_context=vlm_context
+        )
+    current = correction_policy(
+        proposal_waypoints, risk, wm_context, vlm_context=vlm_context
+    )
+    residual = torch.nn.functional.smooth_l1_loss(
+        current["residual_latent"], reference["residual_latent"]
+    )
+    gate = torch.nn.functional.smooth_l1_loss(
+        current["gate_logits"], reference["gate_logits"]
+    )
+    controls = torch.nn.functional.smooth_l1_loss(
+        current["corrected_controls"], reference["corrected_controls"]
+    )
+    return residual + gate + 0.1 * controls
 
 
 def recompute_log_prob(policy: Emu3Pi0, heads: ActionHeads, input_ids, attention_mask, pre_action, cmd,
@@ -494,8 +691,9 @@ def compute_safety_gated_advantage(sub_scores: dict) -> np.ndarray:
 
     if n_safe >= 2:
         safe_progress = progress[is_safe]
-        mu, sigma = safe_progress.mean(), safe_progress.std() + 1e-6
-        adv[is_safe] = (safe_progress - mu) / sigma
+        adv[is_safe] = shrinkage_centered_advantage(
+            safe_progress, noise_floor=ADVANTAGE_NOISE_FLOOR
+        )
         adv[~is_safe] = UNSAFE_ADVANTAGE
         adv -= adv.mean()  # remove the systematic downward shift, see docstring
     elif n_safe == 1:
@@ -512,13 +710,16 @@ def compute_safety_gated_advantage(sub_scores: dict) -> np.ndarray:
         # against, so it's expected/correct that the least-bad candidate
         # here can land above zero.
         violation = (1.0 - nc) + (1.0 - dac) + np.maximum(0.0, SAFE_TTC_THRESHOLD - ttc)
-        mu, sigma = violation.mean(), violation.std() + 1e-6
-        adv = -(violation - mu) / sigma
+        adv = -shrinkage_centered_advantage(
+            violation, noise_floor=ADVANTAGE_NOISE_FLOOR
+        )
 
     return adv, is_safe
 
 
-def compute_reference_anchored_advantage(sub_scores: dict, reference_scores: dict):
+def compute_reference_anchored_advantage(
+    sub_scores: dict, reference_scores: dict, constraint_weights=None
+):
     """Lexicographic group advantage relative to the frozen SFT policy on the
     same scene.  NC/DAC/TTC are NAVSIM binary feasibility indicators, so no
     progress gain may compensate for dropping any indicator below reference.
@@ -538,19 +739,28 @@ def compute_reference_anchored_advantage(sub_scores: dict, reference_scores: dic
         reference_scores["driving_direction_compliance"]
     )
 
-    violation = (
-        np.maximum(0.0, ref_nc - nc)
-        + np.maximum(0.0, ref_dac - dac)
-        + np.maximum(0.0, ref_ttc - ttc)
+    weights = validate_constraint_weights(
+        constraint_weights or {"nc": 1.0, "dac": 1.0, "ttc": 1.0}
     )
-    feasible = violation <= 1e-8
+    nc_regret = np.maximum(0.0, ref_nc - nc)
+    dac_regret = np.maximum(0.0, ref_dac - dac)
+    ttc_regret = np.maximum(0.0, ref_ttc - ttc)
+    # The hard feasibility gate remains independent of learned weights.
+    raw_violation = nc_regret + dac_regret + ttc_regret
+    feasible = raw_violation <= 1e-8
+    violation = (
+        weights["nc"] * nc_regret
+        + weights["dac"] * dac_regret
+        + weights["ttc"] * ttc_regret
+    )
     adv = np.zeros(len(nc), dtype=np.float32)
     n_feasible = int(feasible.sum())
 
     if n_feasible >= 2:
         improvement = progress[feasible] - ref_utility
-        mu, sigma = improvement.mean(), improvement.std() + 1e-6
-        adv[feasible] = (improvement - mu) / sigma
+        adv[feasible] = shrinkage_centered_advantage(
+            improvement, noise_floor=ADVANTAGE_NOISE_FLOOR
+        )
         # Severity ordering keeps a recovery signal while guaranteeing every
         # reference-regressing candidate stays below every feasible one.
         if (~feasible).any():
@@ -565,16 +775,17 @@ def compute_reference_anchored_advantage(sub_scores: dict, reference_scores: dic
             adv[~feasible] = -1.0 - bad / (bad.max() + 1e-6)
         adv -= adv.mean()
     else:
-        mu, sigma = violation.mean(), violation.std() + 1e-6
-        adv = -(violation - mu) / sigma
+        adv = -shrinkage_centered_advantage(
+            violation, noise_floor=ADVANTAGE_NOISE_FLOOR
+        )
 
     return adv.astype(np.float32), feasible, violation.astype(np.float32)
 
 
 def main():
-    random.seed(0)
-    np.random.seed(0)
-    torch.manual_seed(0)
+    random.seed(SEED)
+    np.random.seed(SEED)
+    torch.manual_seed(SEED)
 
     print("Loading tokenizer + policy ...", flush=True)
     tokenizer = Emu3Tokenizer.from_pretrained(
@@ -603,6 +814,167 @@ def main():
         raise ValueError("reference_anchored mode requires RL_KL_COEF > 0 to build frozen reference heads")
     print(f"GPU memory after setup: {torch.cuda.memory_allocated() / 1e9:.2f} GB allocated", flush=True)
 
+    control_adapter = None
+    if CONTROL_ADAPTER_CHECKPOINT:
+        checkpoint_path = Path(CONTROL_ADAPTER_CHECKPOINT)
+        if not checkpoint_path.is_file():
+            raise FileNotFoundError(checkpoint_path)
+        try:
+            adapter_payload = torch.load(checkpoint_path, map_location="cpu", weights_only=False)
+        except TypeError as error:
+            if "weights_only" not in str(error):
+                raise
+            adapter_payload = torch.load(checkpoint_path, map_location="cpu")
+        control_adapter = WaypointControlAdapter(
+            dim=int(adapter_payload.get("dim", 128)),
+            layers=int(adapter_payload.get("layers", 2)),
+            heads=int(adapter_payload.get("heads", 4)),
+        ).to(DEVICE)
+        control_adapter.load_state_dict(adapter_payload["model"])
+        control_adapter.eval()
+        for parameter in control_adapter.parameters():
+            parameter.requires_grad_(False)
+        print(
+            f"Loaded frozen control adapter={checkpoint_path} mode={CONTROL_ADAPTER_MODE} "
+            f"max_position_rmse={CONTROL_ADAPTER_MAX_POSITION_RMSE}", flush=True,
+        )
+
+    unified_policy = None
+    unified_outcome = None
+    unified_reference = None
+    if UNIFIED_CORRECTION_CHECKPOINT:
+        def load_payload(path):
+            try:
+                return torch.load(path, map_location="cpu", weights_only=False)
+            except TypeError as error:
+                if "weights_only" not in str(error):
+                    raise
+                return torch.load(path, map_location="cpu")
+
+        correction_payload = load_payload(Path(UNIFIED_CORRECTION_CHECKPOINT))
+        outcome_payload = load_payload(Path(UNIFIED_OUTCOME_CHECKPOINT))
+        unified_policy = UnifiedCorrectionPolicy(
+            dim=int(correction_payload.get("dim", 192)),
+            layers=int(correction_payload.get("layers", 3)),
+            heads=int(correction_payload.get("heads", 6)),
+            wm_context_dim=int(correction_payload.get("wm_context_dim", 4096)),
+            vlm_context_dim=int(correction_payload.get("vlm_context_dim", 4096)),
+            max_trace_length=int(correction_payload.get("max_trace_length", 2)),
+            projection_iterations=int(correction_payload.get("projection_iterations", 30)),
+        ).to(DEVICE)
+        unified_policy.load_state_dict(correction_payload["model"])
+        unified_reference = copy.deepcopy(unified_policy).to(DEVICE).eval()
+        for parameter in unified_reference.parameters():
+            parameter.requires_grad_(False)
+        unified_outcome = ContinuousSceneOutcomeCritic(
+            latent_dim=int(outcome_payload.get("latent_dim", 4096)),
+            dim=int(outcome_payload.get("dim", 256)),
+        ).to(DEVICE)
+        unified_outcome.load_state_dict(outcome_payload["model"])
+        unified_outcome.eval()
+        for parameter in unified_outcome.parameters():
+            parameter.requires_grad_(False)
+        # This is the same executed policy as the Action Expert: its log-prob
+        # is added to the flow log-prob and receives the identical GRPO
+        # advantage, rather than being trained as a post-hoc adapter.
+        # Eval mode disables Transformer dropout so the stored sampled action
+        # has exactly the same distribution during log-prob recomputation;
+        # gradients remain enabled for all correction parameters.
+        unified_policy.eval()
+        trainable_params.extend(unified_policy.parameters())
+        print(
+            f"Loaded joint correction policy={UNIFIED_CORRECTION_CHECKPOINT} "
+            f"outcome={UNIFIED_OUTCOME_CHECKPOINT} logp_coef={UNIFIED_CORRECTION_LOGP_COEF}",
+            flush=True,
+        )
+
+    def unified_scene_context(scene_token):
+        if unified_outcome is None:
+            return None
+        path = UNIFIED_LATENT_ROOT / stable_scene_split(scene_token) / f"{scene_token}.npz"
+        if not path.is_file():
+            raise FileNotFoundError(
+                f"missing unified WM latent for scene {scene_token}: {path}"
+            )
+        with np.load(path, allow_pickle=False) as data:
+            latent = torch.from_numpy(data["eoa_latents"].astype(np.float32)).to(DEVICE)
+        with torch.no_grad():
+            return unified_outcome.scene_context(latent.unsqueeze(0))
+
+    def save_unified_components(directory):
+        if unified_policy is None:
+            return
+        directory = Path(directory)
+        torch.save(
+            {"model": {k: v.detach().cpu() for k, v in unified_policy.state_dict().items()},
+             **unified_policy.metadata()},
+            directory / "unified_correction_policy.pt",
+        )
+        # Store the fixed environment beside the policy so this directory is
+        # a self-contained inference checkpoint.
+        torch.save(
+            {
+                "model": {k: v.detach().cpu() for k, v in unified_outcome.state_dict().items()},
+                "latent_dim": unified_outcome.latent_dim,
+                "dim": unified_outcome.dim,
+            },
+            directory / "unified_outcome_critic.pt",
+        )
+
+    def execute_control_projection(relative_batch):
+        """Deterministic safety wrapper used for rewards and deployment probes."""
+        relative_batch = np.asarray(relative_batch, dtype=np.float32)
+        absolute_batch = np.stack([relative_to_absolute_se2(x) for x in relative_batch])
+        if control_adapter is None:
+            return relative_batch, absolute_batch, 0, 0
+        original_feasible = analyze_pose_trajectories(absolute_batch, dt=0.5)["dynamics_feasible"]
+        attempted_mask = np.ones(len(relative_batch), dtype=bool) if CONTROL_ADAPTER_MODE == "all" else ~original_feasible
+        indices = np.flatnonzero(attempted_mask)
+        if not len(indices):
+            return relative_batch, absolute_batch, 0, 0
+        config = VehicleModelConfig()
+        initial, _, _ = estimate_pseudo_controls(absolute_batch[indices], config.action_dt, config)
+        with torch.inference_mode():
+            projected = control_adapter(
+                torch.from_numpy(relative_batch[indices]).to(DEVICE),
+                torch.from_numpy(initial).to(DEVICE),
+            )
+        projected_rel = projected["relative_trajectory"].cpu().numpy()
+        projected_abs = projected["absolute_trajectory"].cpu().numpy()
+        projected_feasible = analyze_pose_trajectories(projected_abs, dt=0.5)["dynamics_feasible"]
+        delta = np.linalg.norm(projected_abs[..., :2] - absolute_batch[indices, ..., :2], axis=-1)
+        position_rmse = np.sqrt(np.mean(delta**2, axis=1))
+        accepted = projected_feasible & (position_rmse <= CONTROL_ADAPTER_MAX_POSITION_RMSE)
+        accepted_indices = indices[accepted]
+        relative_batch = relative_batch.copy(); absolute_batch = absolute_batch.copy()
+        relative_batch[accepted_indices] = projected_rel[accepted]
+        absolute_batch[accepted_indices] = projected_abs[accepted]
+        return relative_batch, absolute_batch, int(len(indices)), int(accepted.sum())
+
+    def save_execution_metadata(directory):
+        """Keep the deploy-time execution contract beside every policy save."""
+        path = Path(directory)
+        path.mkdir(parents=True, exist_ok=True)
+        with open(path / "reference_anchored_execution.json", "w") as file:
+            json.dump(
+                {
+                    "schema_version": 1,
+                    "control_adapter_checkpoint": CONTROL_ADAPTER_CHECKPOINT,
+                    "control_adapter_mode": CONTROL_ADAPTER_MODE,
+                    "control_adapter_max_position_rmse": CONTROL_ADAPTER_MAX_POSITION_RMSE,
+                    "unified_correction": bool(unified_policy is not None),
+                    "unified_correction_logp_coef": UNIFIED_CORRECTION_LOGP_COEF,
+                    "reward_source": REWARD_SOURCE,
+                    "advantage_mode": ADVANTAGE_MODE,
+                    "advantage_noise_floor": ADVANTAGE_NOISE_FLOOR,
+                    "adaptive_kl": ADAPTIVE_KL,
+                    "target_kl": TARGET_KL,
+                    "kl_hard_limit": KL_HARD_LIMIT,
+                },
+                file,
+                indent=2,
+            )
+
     # Default AdamW now that we're not squeezed onto a 24GB card (AdamW's
     # fp32 momentum/variance state needs ~4.6GB extra for 581M trainable
     # params — trivial on a 48GB+ GPU). RL_OPTIMIZER=sgd still available for
@@ -621,10 +993,32 @@ def main():
     cluster_flat = cluster.reshape(cluster.shape[0], -1)
 
     print(
-        f"REWARD_SOURCE={REWARD_SOURCE} ADVANTAGE_MODE={ADVANTAGE_MODE} "
+        f"SEED={SEED} REWARD_SOURCE={REWARD_SOURCE} ADVANTAGE_MODE={ADVANTAGE_MODE} "
         f"ROLLBACK_COEF={ROLLBACK_COEF} DEPLOYMENT_PROBES={DEPLOYMENT_PROBES} "
-        f"KL_BOOST={KL_BOOST} KL_DECAY={KL_DECAY}", flush=True,
+        f"KL_BOOST={KL_BOOST} KL_DECAY={KL_DECAY} "
+        f"RISK_BUFFER_SIZE={RISK_BUFFER_SIZE} RISK_REPLAY_EVERY={RISK_REPLAY_EVERY} "
+        f"RISK_REPLAY_COEF={RISK_REPLAY_COEF} "
+        f"RISK_EXPOSURE_THRESHOLD={RISK_EXPOSURE_THRESHOLD} "
+        f"RISK_REPLAY_SAMPLING={RISK_REPLAY_SAMPLING} "
+        f"RISK_MANIFEST={RISK_MANIFEST!r} RISK_COVERAGE_MANIFEST={RISK_COVERAGE_MANIFEST!r} "
+        f"RISK_ONLINE_INSERT={int(RISK_ONLINE_INSERT)} RISK_CURRICULUM={int(RISK_CURRICULUM)} "
+        f"RISK_SOURCE_MIX={RISK_SOURCE_MIX_SPEC!r} RISK_TYPE_BALANCE={int(RISK_TYPE_BALANCE)} "
+        f"RISK_REDUNDANCY_COEF={RISK_REDUNDANCY_COEF} RISK_PRIORITY_POWER={RISK_PRIORITY_POWER} "
+        f"DYNAMIC_CONSTRAINT_WEIGHTS={int(DYNAMIC_CONSTRAINT_WEIGHTS)} "
+        f"DYNAMIC_WEIGHT_BOUNDS=({DYNAMIC_WEIGHT_MIN},{DYNAMIC_WEIGHT_MAX}) "
+        f"ADVANTAGE_NOISE_FLOOR={ADVANTAGE_NOISE_FLOOR} "
+        f"ADAPTIVE_KL={int(ADAPTIVE_KL)} TARGET_KL={TARGET_KL} "
+        f"KL_COEF_BOUNDS=({KL_COEF_MIN},{KL_COEF_MAX}) KL_HARD_LIMIT={KL_HARD_LIMIT} "
+        f"ROLLOUT_MICRO_BATCH={ROLLOUT_MICRO_BATCH} "
+        f"DIAGNOSTICS={int(DIAGNOSTICS)} "
+        f"CONTROL_ADAPTER={CONTROL_ADAPTER_CHECKPOINT!r} CONTROL_MODE={CONTROL_ADAPTER_MODE} "
+        f"UNIFIED_CORRECTION={UNIFIED_CORRECTION_CHECKPOINT!r} "
+        f"UNIFIED_OUTCOME={UNIFIED_OUTCOME_CHECKPOINT!r} "
+        f"UNIFIED_LOGP_COEF={UNIFIED_CORRECTION_LOGP_COEF} "
+        f"COLLECT_ONLY={int(COLLECT_ONLY)} COLLECTION_DIR={COLLECTION_DIR!r}", flush=True,
     )
+    if COLLECT_ONLY and not COLLECTION_DIR:
+        raise ValueError("RL_COLLECT_ONLY=1 requires RL_COLLECTION_DIR")
     if ADVANTAGE_MODE == "reference_anchored" and REWARD_SOURCE != "navsim":
         raise ValueError("reference_anchored mode currently requires RL_REWARD_SOURCE=navsim")
     anchor_scores = None
@@ -652,7 +1046,12 @@ def main():
     dataset = Emu3DrivingVAVADataset(data_args, tokenizer=tokenizer)
     token_to_idx = {scene["token"]: i for i, scene in enumerate(dataset.data)}
     token_pool = navsim_scene_tokens if REWARD_SOURCE == "navsim" else anchor_scores
-    usable_indices = [token_to_idx[tok] for tok in token_pool if tok in token_to_idx]
+    # token_pool is a set in NAVSIM mode. Sorting is required: a seeded
+    # random.choice over an unsorted set-derived list maps the same RNG draw
+    # to different scenes across Python processes because of hash randomization.
+    usable_indices = [token_to_idx[tok] for tok in sorted(token_pool) if tok in token_to_idx]
+    collection_indices = [token_to_idx[tok] for tok in sorted(token_pool) if tok in token_to_idx]
+    collection_indices = collection_indices[COLLECTION_SHARD_ID::COLLECTION_NUM_SHARDS]
     print(f"{len(usable_indices)} scenes usable for RL rollouts", flush=True)
     if not usable_indices:
         print("No usable scenes — aborting.")
@@ -663,41 +1062,265 @@ def main():
     sigma = NOISE_STD * (abs(dt) ** 0.5)
 
     reward_history = []
+    control_attempted_total = 0
+    control_accepted_total = 0
     # Reference heads never change. With stable per-scene probe latents, their
     # NAVSIM vector scores are immutable and can be cached after first use.
     reference_score_cache = {}
     adaptive_kl_multiplier = 1.0
+    controlled_kl_coef = KL_COEF
+    previous_observed_kl = 0.0
     risk_event_count = 0
+    # V3 safety rehearsal memory. Dataset indices keep the buffer bounded and
+    # avoid retaining GPU tensors. Priority comes from the whole stochastic
+    # candidate group, not only V2's sparse deterministic-probe failures.
+    risk_buffer = {}
+    replay_update_count = 0
+    manifest_replay_count = 0
+    curriculum_source_counts = {"manifest": 0, "coverage": 0, "online": 0, "fallback": 0}
+    # Keep rehearsal sampling from perturbing the seeded training-scene
+    # sequence. Otherwise V3 and its ablations would see different scenes
+    # solely because one method consumes extra values from Python's RNG.
+    scene_rng = random.Random(SEED)
+    replay_rng = random.Random(SEED + 2027)
 
-    for step_i in range(NUM_STEPS):
-        idx = random.choice(usable_indices)
+    def upsert_risk_memory(
+        token, priority, probe_idx, last_seen, source, label_counts=None
+    ):
+        if RISK_BUFFER_SIZE <= 0:
+            return
+        previous = risk_buffer.get(token)
+        sources = set(previous.get("sources", ())) if previous else set()
+        sources.add(source)
+        merged_counts = dict(previous.get("label_counts", {})) if previous else {}
+        for risk, count in (label_counts or {}).items():
+            merged_counts[risk] = max(int(count), int(merged_counts.get(risk, 0)))
+        risk_buffer[token] = {
+            "idx": token_to_idx[token],
+            "priority": max(float(priority), previous["priority"] if previous else 0.0),
+            "probe_idx": int(probe_idx),
+            "last_seen": int(last_seen),
+            "source": "+".join(sorted(sources)),
+            "sources": sources,
+            "label_counts": merged_counts,
+            "replay_count": int(previous.get("replay_count", 0)) if previous else 0,
+        }
+        if len(risk_buffer) > RISK_BUFFER_SIZE:
+            evict_token = min(
+                risk_buffer,
+                key=lambda tok: (
+                    risk_buffer[tok]["priority"],
+                    risk_buffer[tok]["last_seen"],
+                    tok,
+                ),
+            )
+            del risk_buffer[evict_token]
+
+    manifest_selector = "none"
+    manifest_verified_events = 0
+    manifest_budget = 0
+    coverage_selector = "none"
+    coverage_verified_events = 0
+    scene_constraint_weight_map = {}
+
+    def load_risk_manifest(path_string, source):
+        nonlocal manifest_selector, manifest_budget, manifest_verified_events
+        nonlocal coverage_selector, coverage_verified_events
+        if not path_string:
+            return
+        manifest_path = Path(path_string)
+        if not manifest_path.is_file():
+            raise FileNotFoundError(f"risk manifest not found: {manifest_path}")
+        with open(manifest_path) as file:
+            manifest = json.load(file)
+        if manifest.get("schema_version") != 1:
+            raise ValueError(f"unsupported risk manifest schema: {manifest.get('schema_version')}")
+        selector = str(manifest.get("selector", "unknown"))
+        budget = int(manifest.get("verification_budget_per_scene", 0))
+        if source == "manifest":
+            manifest_selector = selector
+            manifest_budget = budget
+        else:
+            coverage_selector = selector
+        skipped_unverified = skipped_unusable = 0
+        loaded_events = 0
+        for entry in manifest.get("entries", []):
+            token = str(entry["scene_token"])
+            if "dynamic_constraint_weights" in entry:
+                weights = validate_constraint_weights(
+                    entry["dynamic_constraint_weights"],
+                    minimum=DYNAMIC_WEIGHT_MIN,
+                    maximum=DYNAMIC_WEIGHT_MAX,
+                )
+                previous_weights = scene_constraint_weight_map.get(token)
+                if previous_weights is not None and previous_weights != weights:
+                    raise ValueError(f"conflicting dynamic weights for scene {token}")
+                scene_constraint_weight_map[token] = weights
+            verified_count = len(entry.get("verified_unsafe_indices", []))
+            if verified_count == 0:
+                skipped_unverified += 1
+                continue
+            if token not in token_to_idx or token not in token_pool:
+                skipped_unusable += 1
+                continue
+            priority = float(entry.get("risk_priority", 0.0))
+            if priority <= 0.0:
+                raise ValueError(f"verified manifest scene {token} has non-positive priority")
+            upsert_risk_memory(
+                token,
+                priority,
+                probe_idx=0,
+                last_seen=-1,
+                source=source,
+                label_counts=entry.get("verified_label_counts", {}),
+            )
+            loaded_events += verified_count
+        if source == "manifest":
+            manifest_verified_events += loaded_events
+        else:
+            coverage_verified_events += loaded_events
+        print(
+            f"Loaded risk manifest source={source} selector={selector} budget={budget} "
+            f"buffered={len(risk_buffer)} verified_events={loaded_events} "
+            f"skipped_unverified={skipped_unverified} skipped_unusable={skipped_unusable}",
+            flush=True,
+        )
+
+    load_risk_manifest(RISK_MANIFEST, "manifest")
+    load_risk_manifest(RISK_COVERAGE_MANIFEST, "coverage")
+
+    if COLLECT_ONLY:
+        collection_root = Path(COLLECTION_DIR)
+        for split in ("train", "val", "test"):
+            (collection_root / split).mkdir(parents=True, exist_ok=True)
+        print(
+            f"Collection mode: {len(collection_indices)} deterministic scenes, "
+            f"{GROUP_SIZE} candidates/scene, resume enabled at {collection_root}",
+            flush=True,
+        )
+
+    loop_steps = min(NUM_STEPS, len(collection_indices)) if COLLECT_ONLY else NUM_STEPS
+    for step_i in range(loop_steps):
+        idx = (
+            collection_indices[step_i]
+            if COLLECT_ONLY
+            else scene_rng.choice(usable_indices)
+        )
         scene = dataset.data[idx]
+        if COLLECT_ONLY:
+            split = stable_scene_split(scene["token"])
+            collection_path = collection_root / split / f"{scene['token']}.npz"
+            if collection_path.exists():
+                print(
+                    f"collect {step_i:03d} scene={scene['token']} split={split} "
+                    "status=exists",
+                    flush=True,
+                )
+                continue
         sample = dataset[idx]
         input_ids_1 = sample["input_ids"].unsqueeze(0).to(DEVICE)
         attention_mask_1 = sample["attention_mask"].unsqueeze(0).to(DEVICE)
         pre_action_1 = sample["pre_action"].unsqueeze(0).to(DEVICE).to(DTYPE)
         cmd_1 = sample["cmd"].unsqueeze(0).to(DEVICE).to(DTYPE)
 
-        # ---- phase 1: G no-grad rollouts, one at a time (batch_size=1 keeps
-        # peak memory flat regardless of group size — this card can't hold
-        # more than ~1 sample's worth of activations at once alongside the
-        # ~18GB of model weights) ----
+        # ---- phase 1: no-grad rollout micro-batches. Noise is generated in
+        # the legacy candidate-major order before stacking, so changing the
+        # micro-batch size does not change seeded candidate samples. The
+        # phase-2 grad loop below intentionally remains batch-size one. ----
         if REWARD_SOURCE == "anchor":
             entry = anchor_scores[scene["token"]]
             traj_scores = entry["trajectory_scores"][0]
             stacked = {k: np.asarray(traj_scores[k]) for k in ANCHOR_METRIC_KEYS}
 
         rollouts = []
+        rel_trajs = np.zeros((GROUP_SIZE, action_frames, 3), dtype=np.float32)
         abs_trajs = np.zeros((GROUP_SIZE, action_frames, 3), dtype=np.float32)
-        for g in range(GROUP_SIZE):
-            z_final, steps, vlm_seq_len = rollout_and_score(
-                policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
-                action_frames, action_dim, NUM_INFERENCE_STEPS, NOISE_STD,
+        noise_bundles = []
+        for _ in range(GROUP_SIZE):
+            initial = torch.randn(
+                1, action_frames, action_dim, device=DEVICE, dtype=DTYPE
             )
-            rollouts.append((steps, vlm_seq_len))
+            transitions = [torch.randn_like(initial) for _ in range(NUM_INFERENCE_STEPS)]
+            noise_bundles.append((initial, transitions))
+        for start in range(0, GROUP_SIZE, ROLLOUT_MICRO_BATCH):
+            stop = min(start + ROLLOUT_MICRO_BATCH, GROUP_SIZE)
+            batch_size = stop - start
+            initial = torch.cat([noise_bundles[g][0] for g in range(start, stop)])
+            transition_noise = [
+                torch.cat([
+                    noise_bundles[g][1][noise_i] for g in range(start, stop)
+                ])
+                for noise_i in range(NUM_INFERENCE_STEPS)
+            ]
+            z_final, steps, vlm_seq_len = rollout_and_score(
+                policy, policy_heads,
+                input_ids_1.expand(batch_size, -1),
+                attention_mask_1.expand(batch_size, -1),
+                pre_action_1.expand(batch_size, *pre_action_1.shape[1:]),
+                cmd_1.expand(batch_size, -1),
+                action_frames, action_dim, NUM_INFERENCE_STEPS, NOISE_STD,
+                initial_z=initial, transition_noise=transition_noise,
+            )
+            for offset, (member_final, member_steps, member_seq_len) in enumerate(
+                split_batched_rollout(z_final, steps, vlm_seq_len)
+            ):
+                g = start + offset
+                rollouts.append((member_steps, member_seq_len))
+                rel_raw = 0.5 * (
+                    member_final[0].float().cpu().numpy() + 1.0
+                ) * (high - low) + low
+                rel_trajs[g] = rel_raw
+                abs_trajs[g] = relative_to_absolute_se2(rel_raw)
 
-            rel_raw = 0.5 * (z_final[0].float().cpu().numpy() + 1.0) * (high - low) + low
-            abs_trajs[g] = relative_to_absolute_se2(rel_raw)
+        # A single joint policy now owns both distributions. The Action Expert
+        # proposes waypoints; its trainable correction branch samples bounded
+        # residual controls conditioned on the frozen WM outcome context and
+        # analytic physics. NAVSIM scores only the resulting executed paths.
+        unified_records = None
+        if unified_policy is not None:
+            proposal_rel_trajs = rel_trajs.copy()
+            scene_context = unified_scene_context(scene["token"])
+            expanded_context = scene_context.expand(GROUP_SIZE, -1)
+            proposal_tensor = torch.from_numpy(proposal_rel_trajs).to(DEVICE)
+            vlm_context = torch.cat([
+                rollouts[g][0][-1]["vlm_context"] for g in range(GROUP_SIZE)
+            ]).float()
+            residual_noise = torch.randn(GROUP_SIZE, action_frames, 2, device=DEVICE)
+            gate_noise = torch.randn(GROUP_SIZE, device=DEVICE)
+            # tau^base / tau^final via the shared verified-correction stack
+            # (docs/reference_anchored_correction_rl.tex Step 5 + the
+            # verification paragraph) -- the same function is used for the
+            # frozen reference-anchored probes below (deterministic=True),
+            # so the current and reference sides of every comparison run
+            # through identical projection/gate/verification logic and
+            # cannot silently drift apart from each other. abs_trajs is
+            # regenerated from rel_trajs by execute_control_projection
+            # immediately below, so it is not recomputed here.
+            applied = apply_verified_correction(
+                unified_policy, unified_outcome, proposal_tensor,
+                expanded_context, vlm_context, deterministic=False,
+                residual_noise=residual_noise, gate_noise=gate_noise,
+            )
+            corrected = applied["output"]
+            rel_trajs = applied["final_relative"].cpu().numpy()
+            unified_records = {
+                "proposal": proposal_tensor.detach(),
+                "risk": corrected["risk_condition"].detach(),
+                "context": expanded_context.detach(),
+                "vlm_context": vlm_context.detach(),
+                "residual_noise": residual_noise.detach(),
+                "gate_noise": gate_noise.detach(),
+                "physics_before": corrected["reference_physics_violation"].cpu().numpy(),
+                "physics_after": corrected["corrected_physics_violation"].cpu().numpy(),
+                "gate": corrected["gate_probability"].cpu().numpy(),
+                "residual_abs": corrected["residual_controls"].abs().mean(
+                    dim=(-2, -1)
+                ).cpu().numpy(),
+            }
+
+        rel_trajs, abs_trajs, control_attempted, control_accepted = execute_control_projection(
+            rel_trajs
+        )
 
         if REWARD_SOURCE == "navsim":
             if ADVANTAGE_MODE == "reference_anchored":
@@ -706,31 +1329,124 @@ def main():
                 probe_vlm_seq_lens = []
                 reference_finals, missing_reference_indices = [], []
                 cache_hit = token in reference_score_cache
-
+                deployment_latents = []
+                current_probe_noise = []
+                reference_probe_noise = []
                 for probe_idx in range(DEPLOYMENT_PROBES):
                     deployment_z = fixed_scene_latent(token, probe_idx, action_frames, action_dim)
-                    current_final, det_steps, det_seq_len = rollout_and_score(
-                        policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
-                        action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
-                        initial_z=deployment_z,
-                    )
-                    current_probe_finals.append(current_final)
-                    current_probe_steps.append(det_steps)
-                    probe_vlm_seq_lens.append(det_seq_len)
+                    deployment_latents.append(deployment_z)
+                    # Preserve the old global RNG consumption even though
+                    # sigma=0 makes these tensors irrelevant to the ODE path.
+                    current_probe_noise.append([
+                        torch.randn_like(deployment_z)
+                        for _ in range(NUM_INFERENCE_STEPS)
+                    ])
                     if not cache_hit:
-                        reference_final, _, _ = rollout_and_score(
-                            policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1,
-                            action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
-                            initial_z=deployment_z,
-                        )
-                        reference_finals.append(reference_final)
+                        reference_probe_noise.append([
+                            torch.randn_like(deployment_z)
+                            for _ in range(NUM_INFERENCE_STEPS)
+                        ])
                         missing_reference_indices.append(probe_idx)
+
+                probe_batch = DEPLOYMENT_PROBES
+                probe_initial = torch.cat(deployment_latents)
+                probe_inputs = (
+                    input_ids_1.expand(probe_batch, -1),
+                    attention_mask_1.expand(probe_batch, -1),
+                    pre_action_1.expand(probe_batch, *pre_action_1.shape[1:]),
+                    cmd_1.expand(probe_batch, -1),
+                )
+                current_final, det_steps, det_seq_len = rollout_and_score(
+                    policy, policy_heads, *probe_inputs,
+                    action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
+                    initial_z=probe_initial,
+                    transition_noise=[
+                        torch.cat([current_probe_noise[p][i] for p in range(probe_batch)])
+                        for i in range(NUM_INFERENCE_STEPS)
+                    ],
+                )
+                for final, steps, seq_len in split_batched_rollout(
+                    current_final, det_steps, det_seq_len
+                ):
+                    current_probe_finals.append(final)
+                    current_probe_steps.append(steps)
+                    probe_vlm_seq_lens.append(seq_len)
+                if not cache_hit:
+                    reference_final, reference_steps, reference_seq_len = rollout_and_score(
+                        policy, ref_heads, *probe_inputs,
+                        action_frames, action_dim, NUM_INFERENCE_STEPS, 0.0,
+                        initial_z=probe_initial,
+                        transition_noise=[
+                            torch.cat([reference_probe_noise[p][i] for p in range(probe_batch)])
+                            for i in range(NUM_INFERENCE_STEPS)
+                        ],
+                    )
+                    reference_finals = [
+                        record[0] for record in split_batched_rollout(
+                            reference_final, reference_steps, reference_seq_len
+                        )
+                    ]
 
                 extra_finals = current_probe_finals + reference_finals
                 extra_abs = np.zeros((len(extra_finals), action_frames, action_dim), dtype=np.float32)
                 for extra_i, z_final in enumerate(extra_finals):
                     rel_raw = 0.5 * (z_final[0].float().cpu().numpy() + 1.0) * (high - low) + low
                     extra_abs[extra_i] = relative_to_absolute_se2(rel_raw)
+                extra_relative = np.stack([
+                    0.5 * (z_final[0].float().cpu().numpy() + 1.0) * (high - low) + low
+                    for z_final in extra_finals
+                ])
+                deployment_proposal_relative = None
+                if unified_policy is not None:
+                    current_relative = torch.from_numpy(
+                        extra_relative[:DEPLOYMENT_PROBES]
+                    ).to(DEVICE)
+                    deployment_proposal_relative = current_relative
+                    current_context = scene_context.expand(DEPLOYMENT_PROBES, -1)
+                    # Deterministic: probes measure a fixed deployment
+                    # decision (mean residual, thresholded gate), matching
+                    # apply_unified_correction_policy.py's inference
+                    # behavior -- not a fresh stochastic sample every time
+                    # this scene happens to be probed.
+                    applied_current = apply_verified_correction(
+                        unified_policy, unified_outcome, current_relative,
+                        current_context, det_steps[-1]["vlm_context"].float(),
+                        deterministic=True,
+                    )
+                    extra_relative[:DEPLOYMENT_PROBES] = (
+                        applied_current["final_relative"].cpu().numpy()
+                    )
+                    if not cache_hit:
+                        # Reference-anchored comparison requires both sides
+                        # to run through the *same* deployment pipeline
+                        # (docs/reference_anchored_correction_rl.tex): the
+                        # frozen policy's own proposal is independently
+                        # projected and corrected by the frozen
+                        # unified_reference copy, never by unified_policy
+                        # and never conditioned on the current-side
+                        # trajectory/context computed above. scene_context is
+                        # shared because it depends only on the scene token,
+                        # not on which policy produced a candidate. This
+                        # branch only runs on a cache miss: once computed,
+                        # the frozen deployment stack is deterministic, so
+                        # its NAVSIM score is cached below exactly like the
+                        # old raw-waypoint reference score was.
+                        reference_relative_tensor = torch.from_numpy(
+                            extra_relative[DEPLOYMENT_PROBES:DEPLOYMENT_PROBES * 2]
+                        ).to(DEVICE)
+                        applied_reference = apply_verified_correction(
+                            unified_reference, unified_outcome, reference_relative_tensor,
+                            current_context, reference_steps[-1]["vlm_context"].float(),
+                            deterministic=True,
+                        )
+                        extra_relative[DEPLOYMENT_PROBES:DEPLOYMENT_PROBES * 2] = (
+                            applied_reference["final_relative"].cpu().numpy()
+                        )
+                _, extra_abs, probe_control_attempted, probe_control_accepted = execute_control_projection(
+                    extra_relative
+                )
+                control_attempted += probe_control_attempted
+                control_accepted += probe_control_accepted
                 all_scores = score_with_navsim_simulator(
                     token, np.concatenate([abs_trajs, extra_abs], axis=0)
                 )
@@ -740,6 +1456,14 @@ def main():
                     for probe_idx in range(DEPLOYMENT_PROBES)
                 ]
                 if not cache_hit:
+                    # When unified_policy is active, this caches NAVSIM
+                    # scores for the frozen policy's *full deployed stack*
+                    # (projection + frozen correction + verification), not
+                    # the raw frozen-AE waypoint -- the two are different
+                    # quantities. reference_score_cache is in-memory and
+                    # freshly empty at the start of every run, so there is
+                    # no on-disk cache from an older code version to worry
+                    # about invalidating.
                     ref_offset = GROUP_SIZE + DEPLOYMENT_PROBES
                     reference_score_cache[token] = [
                         {k: float(v[ref_offset + probe_idx]) for k, v in all_scores.items()}
@@ -769,14 +1493,80 @@ def main():
                 for k in ANCHOR_METRIC_KEYS:
                     sub_scores[k][g] = stacked[k][nearest]
 
+        control_attempted_total += control_attempted
+        control_accepted_total += control_accepted
+
+        if COLLECT_ONLY:
+            if ADVANTAGE_MODE != "reference_anchored":
+                raise ValueError("world-action collection requires reference_anchored mode")
+            _, collect_feasible, collect_violation = compute_reference_anchored_advantage(
+                sub_scores, reference_scores
+            )
+            payload = {
+                "schema_version": np.asarray(1, dtype=np.int32),
+                "scene_token": np.asarray(scene["token"]),
+                "split": np.asarray(split),
+                "relative_trajectories": rel_trajs.astype(np.float32),
+                "absolute_trajectories": abs_trajs.astype(np.float32),
+                "expert_action_normalized": np.asarray(
+                    scene["action"][3:3 + action_frames], dtype=np.float32
+                ),
+                "reference_feasible": collect_feasible.astype(np.bool_),
+                "reference_violation": collect_violation.astype(np.float32),
+                "candidate_seed": np.asarray(0, dtype=np.int64),
+            }
+            for key, values in sub_scores.items():
+                payload[f"score__{key}"] = np.asarray(values, dtype=np.float32)
+            for key in SUB_SCORE_KEYS:
+                payload[f"reference_probe__{key}"] = np.asarray(
+                    [x[key] for x in reference_probe_scores], dtype=np.float32
+                )
+                payload[f"current_probe__{key}"] = np.asarray(
+                    [x[key] for x in current_probe_scores], dtype=np.float32
+                )
+            # Unique sequential scenes mean reference_finals are present on
+            # the first collection pass. Store their verified trajectories so
+            # later latent-risk work can form same-scene policy/reference pairs.
+            payload["current_probe_absolute_trajectories"] = extra_abs[
+                :DEPLOYMENT_PROBES
+            ].astype(np.float32)
+            payload["reference_probe_absolute_trajectories"] = extra_abs[
+                DEPLOYMENT_PROBES:
+            ].astype(np.float32)
+
+            tmp_path = collection_path.with_suffix(".tmp")
+            with open(tmp_path, "wb") as f:
+                np.savez_compressed(f, **payload)
+            os.replace(tmp_path, collection_path)
+            print(
+                f"collect {step_i:03d} scene={scene['token']} split={split} "
+                f"candidates={GROUP_SIZE} unsafe_frac={float((~collect_feasible).mean()):.4f} "
+                f"violation_mean={float(collect_violation.mean()):.4f} "
+                f"path={collection_path}",
+                flush=True,
+            )
+            continue
+
+        scene_constraint_weights = {"nc": 1.0, "dac": 1.0, "ttc": 1.0}
+        if DYNAMIC_CONSTRAINT_WEIGHTS:
+            scene_constraint_weights = scene_constraint_weight_map.get(
+                scene["token"], scene_constraint_weights
+            )
         if ADVANTAGE_MODE == "reference_anchored":
-            adv, is_safe, violation = compute_reference_anchored_advantage(sub_scores, reference_scores)
+            adv, is_safe, violation = compute_reference_anchored_advantage(
+                sub_scores, reference_scores, scene_constraint_weights
+            )
             probe_regrets = []
             for current_scores, ref_scores in zip(current_probe_scores, reference_probe_scores):
                 nc_regret = max(0.0, ref_scores["no_at_fault_collisions"] - current_scores["no_at_fault_collisions"])
                 dac_regret = max(0.0, ref_scores["drivable_area_compliance"] - current_scores["drivable_area_compliance"])
                 ttc_regret = max(0.0, ref_scores["time_to_collision_within_bound"] - current_scores["time_to_collision_within_bound"])
-                probe_regrets.append((nc_regret + dac_regret + ttc_regret, nc_regret, dac_regret, ttc_regret))
+                weighted_regret = (
+                    scene_constraint_weights["nc"] * nc_regret
+                    + scene_constraint_weights["dac"] * dac_regret
+                    + scene_constraint_weights["ttc"] * ttc_regret
+                )
+                probe_regrets.append((weighted_regret, nc_regret, dac_regret, ttc_regret))
             worst_probe_idx = int(np.argmax([x[0] for x in probe_regrets]))
             det_violation, det_nc_regret, det_dac_regret, det_ttc_regret = probe_regrets[worst_probe_idx]
             if det_violation > 0.0:
@@ -792,8 +1582,36 @@ def main():
             adaptive_kl_multiplier = 1.0
             worst_probe_idx = 0
             cache_hit = False
-        effective_kl_coef = KL_COEF * adaptive_kl_multiplier
+        # Random candidates expose substantially more safety drift than the
+        # two deployment probes. Preserve scenes with either a deterministic
+        # regression, high mean violation, or a large infeasible fraction.
+        candidate_risk = float(np.maximum(violation, 0.0).mean())
+        unsafe_fraction = float((~is_safe).mean())
+        risk_priority = max(float(det_violation), candidate_risk, unsafe_fraction)
+        if (
+            ADVANTAGE_MODE == "reference_anchored"
+            and RISK_ONLINE_INSERT
+            and RISK_BUFFER_SIZE > 0
+            and risk_priority >= RISK_EXPOSURE_THRESHOLD
+        ):
+            token = scene["token"]
+            upsert_risk_memory(
+                token,
+                risk_priority,
+                probe_idx=worst_probe_idx if det_violation > 0.0 else 0,
+                last_seen=step_i,
+                source="online",
+            )
+        effective_kl_coef = controlled_kl_coef * adaptive_kl_multiplier
+        kl_guard_active = bool(
+            KL_HARD_LIMIT > 0.0 and previous_observed_kl > KL_HARD_LIMIT
+        )
         if ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0:
+            rl_weight = 0.0
+        elif kl_guard_active:
+            # The observed reference KL is already outside the configured
+            # region. Suppress the outward policy-gradient term for one
+            # update while retaining the KL restoration gradient.
             rl_weight = 0.0
         else:
             rl_weight = 1.0 / adaptive_kl_multiplier
@@ -807,7 +1625,25 @@ def main():
         for g in range(GROUP_SIZE):
             steps, vlm_seq_len = rollouts[g]
             logp_policy = recompute_log_prob(policy, policy_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1, steps, sigma, vlm_seq_len)
-            pg_loss_g = -rl_weight * (float(adv[g]) * logp_policy).mean()
+            joint_logp = logp_policy
+            if unified_records is not None:
+                correction = unified_policy(
+                    unified_records["proposal"][g:g + 1],
+                    unified_records["risk"][g:g + 1],
+                    unified_records["context"][g:g + 1],
+                    vlm_context=unified_records["vlm_context"][g:g + 1],
+                    sample_correction=True,
+                    correction_noise=(
+                        unified_records["residual_noise"][g:g + 1],
+                        unified_records["gate_noise"][g:g + 1],
+                    ),
+                )
+                joint_logp = (
+                    logp_policy
+                    + UNIFIED_CORRECTION_LOGP_COEF
+                    * correction["correction_log_prob"]
+                )
+            pg_loss_g = -rl_weight * (float(adv[g]) * joint_logp).mean()
             if ref_heads is not None:
                 with torch.no_grad():
                     logp_ref = recompute_log_prob(policy, ref_heads, input_ids_1, attention_mask_1, pre_action_1, cmd_1, steps, sigma, vlm_seq_len)
@@ -822,6 +1658,29 @@ def main():
                 log_ratio_mean = log_ratio_mean.clamp(-20.0, 20.0)
                 ratio = torch.exp(log_ratio_mean)
                 kl_g = (ratio - 1) - log_ratio_mean
+                if unified_records is not None:
+                    with torch.no_grad():
+                        reference_correction = unified_reference(
+                            unified_records["proposal"][g:g + 1],
+                            unified_records["risk"][g:g + 1],
+                            unified_records["context"][g:g + 1],
+                            vlm_context=unified_records["vlm_context"][g:g + 1],
+                            sample_correction=True,
+                            correction_noise=(
+                                unified_records["residual_noise"][g:g + 1],
+                                unified_records["gate_noise"][g:g + 1],
+                            ),
+                        )
+                    correction_log_ratio = (
+                        correction["correction_log_prob"]
+                        - reference_correction["correction_log_prob"]
+                    ) / (action_frames * 2 + 1)
+                    correction_log_ratio = correction_log_ratio.clamp(-20.0, 20.0)
+                    correction_ratio = correction_log_ratio.exp()
+                    correction_kl = (
+                        correction_ratio - 1.0 - correction_log_ratio
+                    ).mean()
+                    kl_g = kl_g + correction_kl
                 loss_g = pg_loss_g + effective_kl_coef * kl_g
                 kl_sum += kl_g.item()
             else:
@@ -830,31 +1689,228 @@ def main():
             pg_loss_sum += pg_loss_g.item()
 
         rollback_value = 0.0
+        rollback_correction_value = 0.0
         if ADVANTAGE_MODE == "reference_anchored" and det_violation > 0.0:
             rollback_loss = reference_path_rollback_loss(
                 policy, policy_heads, ref_heads, input_ids_1, attention_mask_1,
                 pre_action_1, cmd_1, current_probe_steps[worst_probe_idx],
                 probe_vlm_seq_lens[worst_probe_idx],
             )
-            (ROLLBACK_COEF * det_violation * rollback_loss).backward()
+            total_rollback_loss = rollback_loss
+            # Close the same rehearsal asymmetry as correction_path_rollback_loss,
+            # but for the immediate same-step rollback trigger rather than the
+            # deferred risk-buffer replay: a deterministic-probe regression must
+            # also pull the correction policy's gate/residual back toward its
+            # frozen reference, not just the waypoint Action Expert.
+            if unified_policy is not None and deployment_proposal_relative is not None:
+                worst_proposal = deployment_proposal_relative[worst_probe_idx:worst_probe_idx + 1]
+                worst_vlm_context = current_probe_steps[worst_probe_idx][-1]["vlm_context"].float()
+                rollback_correction_loss = correction_path_rollback_loss(
+                    unified_policy, unified_reference, unified_outcome,
+                    worst_proposal, scene_context, worst_vlm_context,
+                )
+                total_rollback_loss = total_rollback_loss + rollback_correction_loss
+                rollback_correction_value = float(rollback_correction_loss.item())
+            (ROLLBACK_COEF * det_violation * total_rollback_loss).backward()
             rollback_value = float(rollback_loss.item())
 
         grad_norm = torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=1.0)
         optimizer.step()
+        observed_kl = kl_sum / GROUP_SIZE
+        previous_observed_kl = observed_kl
+        if ADAPTIVE_KL:
+            controlled_kl_coef = update_adaptive_kl_coefficient(
+                controlled_kl_coef,
+                observed_kl,
+                target_kl=TARGET_KL,
+                adaptation_rate=KL_ADAPTATION_RATE,
+                minimum=KL_COEF_MIN,
+                maximum=KL_COEF_MAX,
+            )
+
+        # Apply safety rehearsal as its own optimizer step. If it shared the
+        # GRPO backward pass, the small reference-consistency gradient would
+        # be suppressed by the policy gradient before global clipping.
+        replay_value = 0.0
+        replay_correction_value = 0.0
+        replay_correction_grad_norm = 0.0
+        replay_grad_norm = 0.0
+        replay_token = "none"
+        replay_source = "none"
+        replay_bucket = "none"
+        replay_label_counts = {}
+        if (
+            ADVANTAGE_MODE == "reference_anchored"
+            and RISK_REPLAY_EVERY > 0
+            and risk_buffer
+            and (step_i + 1) % RISK_REPLAY_EVERY == 0
+        ):
+            # Dataset transforms and model forwards may consume global
+            # Python/NumPy/CPU/CUDA RNG even though the rehearsal ODE uses a
+            # fixed latent and zero transition noise. Preserve all streams so
+            # enabling replay cannot change later on-policy candidate noise.
+            python_rng_state = random.getstate()
+            numpy_rng_state = np.random.get_state()
+            torch_rng_state = torch.random.get_rng_state()
+            cuda_rng_states = torch.cuda.get_rng_state_all() if torch.cuda.is_available() else None
+            replay_tokens = sorted(risk_buffer)
+            if RISK_CURRICULUM:
+                replay_token, replay_bucket = select_curriculum_memory(
+                    risk_buffer,
+                    replay_rng,
+                    RISK_SOURCE_MIX,
+                    type_balance=RISK_TYPE_BALANCE,
+                    redundancy_coef=RISK_REDUNDANCY_COEF,
+                    priority_power=RISK_PRIORITY_POWER,
+                )
+                curriculum_source_counts[replay_bucket] += 1
+            elif RISK_REPLAY_SAMPLING == "priority":
+                # alpha=1 reproduces legacy priority sampling; alpha=0 is
+                # exactly uniform. Intermediate values avoid double-counting
+                # risk when the manifest selector already enriches hard cases.
+                replay_weights = tempered_priority_weights(
+                    [risk_buffer[t]["priority"] for t in replay_tokens],
+                    RISK_PRIORITY_POWER,
+                )
+                replay_token = replay_rng.choices(
+                    replay_tokens, weights=replay_weights, k=1
+                )[0]
+                replay_bucket = "legacy_priority"
+            else:
+                replay_token = replay_rng.choice(replay_tokens)
+                replay_bucket = "legacy_uniform"
+            memory = risk_buffer[replay_token]
+            replay_source = memory["source"]
+            replay_label_counts = memory.get("label_counts", {})
+            replay_sample = dataset[memory["idx"]]
+            replay_input_ids = replay_sample["input_ids"].unsqueeze(0).to(DEVICE)
+            replay_attention_mask = replay_sample["attention_mask"].unsqueeze(0).to(DEVICE)
+            replay_pre_action = replay_sample["pre_action"].unsqueeze(0).to(DEVICE).to(DTYPE)
+            replay_cmd = replay_sample["cmd"].unsqueeze(0).to(DEVICE).to(DTYPE)
+            replay_z = fixed_scene_latent(
+                replay_token, memory["probe_idx"], action_frames, action_dim
+            )
+            replay_reference_final, reference_steps, replay_vlm_seq_len = rollout_and_score(
+                policy, ref_heads, replay_input_ids, replay_attention_mask,
+                replay_pre_action, replay_cmd, action_frames, action_dim,
+                NUM_INFERENCE_STEPS, 0.0, initial_z=replay_z,
+            )
+            optimizer.zero_grad()
+            replay_loss = reference_path_rollback_loss(
+                policy, policy_heads, ref_heads, replay_input_ids,
+                replay_attention_mask, replay_pre_action, replay_cmd,
+                reference_steps, replay_vlm_seq_len,
+            )
+            total_replay_loss = replay_loss
+            if unified_policy is not None:
+                replay_relative = 0.5 * (
+                    replay_reference_final[0].float() + 1.0
+                ) * torch.from_numpy(high - low).to(DEVICE) + torch.from_numpy(low).to(DEVICE)
+                replay_relative = replay_relative.unsqueeze(0)
+                replay_context = unified_scene_context(replay_token)
+                replay_vlm_context = reference_steps[-1]["vlm_context"].float()
+                replay_correction_loss = correction_path_rollback_loss(
+                    unified_policy, unified_reference, unified_outcome,
+                    replay_relative, replay_context, replay_vlm_context,
+                )
+                total_replay_loss = total_replay_loss + replay_correction_loss
+                replay_correction_value = float(replay_correction_loss.item())
+            (RISK_REPLAY_COEF * total_replay_loss).backward()
+            if unified_policy is not None:
+                correction_grad_sq = sum(
+                    float(parameter.grad.detach().float().square().sum().item())
+                    for parameter in unified_policy.parameters()
+                    if parameter.grad is not None
+                )
+                replay_correction_grad_norm = correction_grad_sq ** 0.5
+            replay_grad_norm = float(
+                torch.nn.utils.clip_grad_norm_(trainable_params, max_norm=1.0)
+            )
+            optimizer.step()
+            replay_value = float(replay_loss.item())
+            replay_update_count += 1
+            memory["replay_count"] += 1
+            if "manifest" in replay_source:
+                manifest_replay_count += 1
+            random.setstate(python_rng_state)
+            np.random.set_state(numpy_rng_state)
+            torch.random.set_rng_state(torch_rng_state)
+            if cuda_rng_states is not None:
+                torch.cuda.set_rng_state_all(cuda_rng_states)
+
+        if DIAGNOSTICS:
+            diagnostic_progress = np.asarray(sub_scores["ego_progress"])
+            if ADVANTAGE_MODE == "reference_anchored":
+                diagnostic_progress = diagnostic_progress + 0.25 * np.asarray(
+                    sub_scores["driving_direction_compliance"]
+                )
+            diagnostic = compute_rollout_diagnostics(
+                abs_trajs,
+                sub_scores,
+                adv,
+                violation,
+                is_safe,
+                progress_values=diagnostic_progress,
+                trajectory_epsilon=DIAGNOSTIC_TRAJECTORY_EPS,
+                score_epsilon=DIAGNOSTIC_SCORE_EPS,
+            )
+            print(
+                f"diagnostics step={step_i:03d} scene={scene['token']} "
+                + " ".join(f"{key}={value:.6g}" for key, value in diagnostic.items()),
+                flush=True,
+            )
 
         safe_frac = float(is_safe.mean())
         ttc_mean = float(sub_scores["time_to_collision_within_bound"].mean())
         progress_mean = float(sub_scores["ego_progress"].mean())
+        unified_gate_mean = (
+            float(np.mean(unified_records["gate"]))
+            if unified_records is not None else 0.0
+        )
+        unified_physics_before = (
+            float(np.mean(unified_records["physics_before"]))
+            if unified_records is not None else 0.0
+        )
+        unified_physics_after = (
+            float(np.mean(unified_records["physics_after"]))
+            if unified_records is not None else 0.0
+        )
+        unified_residual_abs = (
+            float(np.mean(unified_records["residual_abs"]))
+            if unified_records is not None else 0.0
+        )
         reward_history.append({"safe_frac": safe_frac, "ttc_mean": ttc_mean, "progress_mean": progress_mean})
         print(
             f"step {step_i:03d} scene={scene['token']} "
             f"safe_frac={safe_frac:.4f} ttc_mean={ttc_mean:.4f} progress_mean={progress_mean:.4f} "
             f"adv_mean={adv.mean():.4f} adv_std={adv.std():.4f} "
-            f"pg_loss={pg_loss_sum / GROUP_SIZE:.4f} kl={kl_sum / GROUP_SIZE:.4f} "
-            f"rl_weight={rl_weight:.4f} kl_mult={adaptive_kl_multiplier:.4f} effective_kl={effective_kl_coef:.4f} "
+            f"pg_loss={pg_loss_sum / GROUP_SIZE:.4f} kl={kl_sum / GROUP_SIZE:.8g} "
+            f"rl_weight={rl_weight:.4f} kl_mult={adaptive_kl_multiplier:.4f} "
+            f"effective_kl={effective_kl_coef:.4f} next_kl_coef={controlled_kl_coef:.4f} "
+            f"kl_guard={int(kl_guard_active)} "
             f"det_violation={det_violation:.4f} det_nc_regret={det_nc_regret:.4f} "
             f"det_dac_regret={det_dac_regret:.4f} det_ttc_regret={det_ttc_regret:.4f} "
-            f"rollback={rollback_value:.6f} risk_events={risk_event_count} cache_hit={int(cache_hit)} "
+            f"w_nc={scene_constraint_weights['nc']:.4f} "
+            f"w_dac={scene_constraint_weights['dac']:.4f} "
+            f"w_ttc={scene_constraint_weights['ttc']:.4f} "
+            f"control_attempted={control_attempted} control_accepted={control_accepted} "
+            f"unified_gate={unified_gate_mean:.4f} "
+            f"unified_residual_abs={unified_residual_abs:.6f} "
+            f"unified_physics_before={unified_physics_before:.6f} "
+            f"unified_physics_after={unified_physics_after:.6f} "
+            f"rollback={rollback_value:.6f} "
+            f"rollback_correction={rollback_correction_value:.6f} "
+            f"risk_priority={risk_priority:.4f} "
+            f"risk_buffer={len(risk_buffer)} replay={replay_value:.6f} "
+            f"replay_correction={replay_correction_value:.6f} "
+            f"replay_correction_grad_norm={replay_correction_grad_norm:.6f} "
+            f"replay_scene={replay_token} replay_source={replay_source} replay_bucket={replay_bucket} "
+            f"replay_grad_norm={replay_grad_norm:.4f} "
+            f"replay_unsafe={int(replay_label_counts.get('unsafe', 0))} "
+            f"replay_ttc={int(replay_label_counts.get('ttc_failure', 0))} "
+            f"replay_dac={int(replay_label_counts.get('dac_failure', 0))} "
+            f"replay_nc={int(replay_label_counts.get('nc_failure', 0))} "
+            f"risk_events={risk_event_count} cache_hit={int(cache_hit)} "
             f"ref_ttc={reference_probe_scores[worst_probe_idx]['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
             f"det_ttc={current_probe_scores[worst_probe_idx]['time_to_collision_within_bound'] if ADVANTAGE_MODE == 'reference_anchored' else -1:.4f} "
             f"grad_norm={grad_norm:.4f}",
@@ -870,11 +1926,15 @@ def main():
             step_dir = f"{CHECKPOINT_DIR}/step_{step_i + 1:06d}"
             print(f"Saving checkpoint at step {step_i} to {step_dir} ...", flush=True)
             policy.save_pretrained(step_dir)
+            save_unified_components(step_dir)
+            save_execution_metadata(step_dir)
 
     if CHECKPOINT_DIR:
         final_dir = f"{CHECKPOINT_DIR}/step_{NUM_STEPS:06d}_final"
         print(f"Saving final checkpoint to {final_dir} ...", flush=True)
         policy.save_pretrained(final_dir)
+        save_unified_components(final_dir)
+        save_execution_metadata(final_dir)
 
     print("\n=== Summary ===")
     first5_safe = [h["safe_frac"] for h in reward_history[:5]]
@@ -883,6 +1943,20 @@ def main():
     last5_ttc = [h["ttc_mean"] for h in reward_history[-5:]]
     print(f"safe_frac over training: first 5 = {first5_safe}, last 5 = {last5_safe}")
     print(f"ttc_mean over training: first 5 = {first5_ttc}, last 5 = {last5_ttc}")
+    print(
+        f"control projection: attempted={control_attempted_total}; "
+        f"accepted={control_accepted_total}; "
+        f"checkpoint={CONTROL_ADAPTER_CHECKPOINT!r}; mode={CONTROL_ADAPTER_MODE}"
+    )
+    print(
+        f"risk buffer final size: {len(risk_buffer)}; "
+        f"safety rehearsal updates: {replay_update_count}; "
+        f"manifest rehearsal updates: {manifest_replay_count}; "
+        f"manifest selector: {manifest_selector}; manifest budget: {manifest_budget}; "
+        f"manifest verified events: {manifest_verified_events}; "
+        f"coverage selector: {coverage_selector}; coverage verified events: {coverage_verified_events}; "
+        f"curriculum source counts: {curriculum_source_counts}"
+    )
 
 
 if __name__ == "__main__":

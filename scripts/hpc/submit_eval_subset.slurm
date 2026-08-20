@@ -48,6 +48,14 @@
 
 set -euo pipefail
 
+# A unified checkpoint directory contains the standard DriveVLA weights plus
+# the jointly trained correction policy and its frozen WM outcome environment.
+if [[ -n "${EVAL_UNIFIED_POLICY_DIR:-}" ]]; then
+    export EVAL_EMU_HUB="$EVAL_UNIFIED_POLICY_DIR"
+    export EVAL_UNIFIED_CORRECTION_CHECKPOINT="$EVAL_UNIFIED_POLICY_DIR/unified_correction_policy.pt"
+    export EVAL_UNIFIED_OUTCOME_CHECKPOINT="$EVAL_UNIFIED_POLICY_DIR/unified_outcome_critic.pt"
+fi
+
 : "${EVAL_EMU_HUB:?must set EVAL_EMU_HUB to the checkpoint dir to evaluate}"
 : "${EVAL_EXPERIMENT_NAME:?must set EVAL_EXPERIMENT_NAME (e.g. before_rl_trainval_eval / after_rl_trainval_eval)}"
 
@@ -81,17 +89,88 @@ export VLA_PATH_REPLACEMENTS="/mnt/vdb1/yingyan.li/repo/VLA/data/navsim/processe
 export PYTHONPATH="$REPO_ROOT/inference/navsim/navsim:$REPO_ROOT/utils:$REPO_ROOT:${PYTHONPATH:-}"
 
 STAGE_A_OUTPUT="$REPO_ROOT/output/${EVAL_EXPERIMENT_NAME}"
+SCORE_INPUT="$STAGE_A_OUTPUT"
 
 echo "=== [1/2] Stage A inference (drivevla env), checkpoint=$EVAL_EMU_HUB ==="
 # torchrun默认绑定 29500 端口做 rendezvous —— 多个 eval job 如果被 SLURM
 # 分到同一个物理节点(不同 GPU,共享网络命名空间)会互相撞端口
 # (EADDRINUSE)。用 job ID 派生一个各自独立的端口。
 MASTER_PORT=$((20000 + SLURM_JOB_ID % 10000))
-torchrun --nproc_per_node=1 --master_port="$MASTER_PORT" inference/vla/inference_action_navsim_flow_matching_vava.py \
+INFERENCE_ARGS=( \
     --emu_hub "$EVAL_EMU_HUB" \
     --output_dir "$STAGE_A_OUTPUT" \
     --test_data_pkl "$REPO_ROOT/pretrained_models/DriveVLA-W0/navsim_emu_vla_256_144_trainval_rl_eval_pre_1s.pkl" \
-    --token_yaml "$REPO_ROOT/data/navsim/processed_data/scene_files/scene_filter/trainval_rl_eval.yaml"
+    --token_yaml "$REPO_ROOT/data/navsim/processed_data/scene_files/scene_filter/trainval_rl_eval.yaml" \
+    --seed "${EVAL_SEED:-0}" \
+)
+if [[ -n "${EVAL_NATIVE_CONTROL_CHECKPOINT:-}" ]]; then
+    echo "=== Native control Action Expert: $EVAL_NATIVE_CONTROL_CHECKPOINT ==="
+    INFERENCE_ARGS+=(--native_control_checkpoint "$EVAL_NATIVE_CONTROL_CHECKPOINT")
+fi
+if [[ -n "${EVAL_UNIFIED_CORRECTION_CHECKPOINT:-}" ]]; then
+    INFERENCE_ARGS+=(--export_vlm_context)
+fi
+torchrun --nproc_per_node=1 --master_port="$MASTER_PORT" \
+    inference/vla/inference_action_navsim_flow_matching_vava.py "${INFERENCE_ARGS[@]}"
+
+# Unified mainline: one learned correction policy receives the DriveVLA
+# proposal, WM outcome context, and analytic physics, then emits bounded
+# residual controls rolled through the differentiable vehicle model.
+if [[ -n "${EVAL_UNIFIED_CORRECTION_CHECKPOINT:-}" ]]; then
+    if [[ -n "${EVAL_CONTROL_ADAPTER_CHECKPOINT:-}" ]]; then
+        echo "Set either EVAL_UNIFIED_CORRECTION_CHECKPOINT or EVAL_CONTROL_ADAPTER_CHECKPOINT, not both" >&2
+        exit 2
+    fi
+    : "${EVAL_UNIFIED_OUTCOME_CHECKPOINT:?required with unified correction}"
+    UNIFIED_OUTPUT="$REPO_ROOT/output/${EVAL_EXPERIMENT_NAME}_unified_correction"
+    echo "=== [1.5/2] Applying unified correction policy: $EVAL_UNIFIED_CORRECTION_CHECKPOINT ==="
+    python tools/rl_prep/apply_unified_correction_policy.py \
+        --input-dir "$STAGE_A_OUTPUT" \
+        --output-dir "$UNIFIED_OUTPUT" \
+        --policy-checkpoint "$EVAL_UNIFIED_CORRECTION_CHECKPOINT" \
+        --outcome-checkpoint "$EVAL_UNIFIED_OUTCOME_CHECKPOINT" \
+        --tokens-json "$REPO_ROOT/data/navsim/processed_data/anchor/trainval_rl_eval_tokens_cached.json" \
+        --wm-checkpoint "${EVAL_WM_CHECKPOINT:-$REPO_ROOT/pretrained_models/DriveVLA-W0/Emu3_NuPlan_Pretrain_Cktps}" \
+        --wm-scene-pkl "$REPO_ROOT/pretrained_models/DriveVLA-W0/navsim_emu_vla_256_144_trainval_pre_1s.pkl" \
+        --wm-fast-tokenizer "$REPO_ROOT/pretrained_models/fast" \
+        --wm-norm-stats "$REPO_ROOT/configs/normalizer_navsim_trainval/norm_stats.json" \
+        --wm-vq-root "$REPO_ROOT/data/navsim/processed_data/data/navsim/processed_data"
+    SCORE_INPUT="$UNIFIED_OUTPUT"
+fi
+
+# Optional waypoint -> bounded continuous control -> differentiable vehicle
+# projection.  Disabled by default, so all existing evaluation commands retain
+# their original behavior.  The proxy initial state is inferred only from the
+# policy's own predicted waypoints; no held-out future/metric label is used.
+if [[ -n "${EVAL_CONTROL_ADAPTER_CHECKPOINT:-}" ]]; then
+    CONTROL_OUTPUT="$REPO_ROOT/output/${EVAL_EXPERIMENT_NAME}_control_adapter"
+    echo "=== [1.5/2] Applying waypoint control adapter: $EVAL_CONTROL_ADAPTER_CHECKPOINT ==="
+    CONTROL_ARGS=( \
+        --input-dir "$STAGE_A_OUTPUT" \
+        --output-dir "$CONTROL_OUTPUT" \
+        --checkpoint "$EVAL_CONTROL_ADAPTER_CHECKPOINT" \
+        --tokens-json "$REPO_ROOT/data/navsim/processed_data/anchor/trainval_rl_eval_tokens_cached.json" \
+        --projection-mode "${EVAL_CONTROL_ADAPTER_MODE:-all}" \
+        --max-position-rmse "${EVAL_CONTROL_ADAPTER_MAX_POSITION_RMSE:-inf}" \
+        --max-heading-rmse "${EVAL_CONTROL_ADAPTER_MAX_HEADING_RMSE:-inf}" \
+    )
+    if [[ -n "${EVAL_WM_CRITIC_CHECKPOINT:-}" ]]; then
+        CONTROL_ARGS+=( \
+            --wm-critic-checkpoint "$EVAL_WM_CRITIC_CHECKPOINT" \
+            --wm-checkpoint "${EVAL_WM_CHECKPOINT:-$REPO_ROOT/pretrained_models/DriveVLA-W0/Emu3_NuPlan_Pretrain_Cktps}" \
+            --wm-scene-pkl "$REPO_ROOT/pretrained_models/DriveVLA-W0/navsim_emu_vla_256_144_trainval_pre_1s.pkl" \
+            --wm-fast-tokenizer "$REPO_ROOT/pretrained_models/fast" \
+            --wm-norm-stats "$REPO_ROOT/configs/normalizer_navsim_trainval/norm_stats.json" \
+            --wm-vq-root "$REPO_ROOT/data/navsim/processed_data/data/navsim/processed_data" \
+            --candidate-range-scales "${EVAL_CONTROL_CANDIDATE_SCALES:-0.70,0.85,1.0}" \
+            --wm-risk-weights "${EVAL_WM_RISK_WEIGHTS:-1,1,1,1}" \
+            --wm-risk-coef "${EVAL_WM_RISK_COEF:-1.0}" \
+            --track-coef "${EVAL_CONTROL_TRACK_COEF:-0.1}" \
+        )
+    fi
+    python tools/rl_prep/apply_waypoint_control_adapter.py "${CONTROL_ARGS[@]}"
+    SCORE_INPUT="$CONTROL_OUTPUT"
+fi
 
 # ---------------------------------------------------------------------------
 # Stage B (navsim env): score those predictions against the held-out
@@ -109,7 +188,7 @@ export PYTHONPATH="$NAVSIM_DEVKIT_ROOT:${PYTHONPATH:-}"
 
 echo "=== [2/2] Stage B PDM scoring (navsim env) ==="
 python tools/rl_prep/eval_pdm_score_subset.py \
-    --experiment-path "$STAGE_A_OUTPUT" \
+    --experiment-path "$SCORE_INPUT" \
     --experiment-name "$EVAL_EXPERIMENT_NAME" \
     --metric-cache-path "$NAVSIM_EXP_ROOT/metric_cache_trainval_rl_eval" \
     --subset-tokens-json "$REPO_ROOT/data/navsim/processed_data/anchor/trainval_rl_eval_tokens_cached.json" \

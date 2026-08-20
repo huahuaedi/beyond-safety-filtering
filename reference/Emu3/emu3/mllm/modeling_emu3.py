@@ -2215,7 +2215,8 @@ class Emu3Pi0(Emu3PreTrainedModel):
             num_inference_steps: Optional[int] = None,
             action_frames: Optional[int] = None,
             action_dim: Optional[int] = None,
-    ) -> torch.Tensor:
+            return_vlm_context: bool = False,
+    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
         """
         Sample actions using iterative denoising with shared VLM-Action Expert attention,
         mimicking the training forward pass and pi0-style Euler sampling.
@@ -2230,6 +2231,8 @@ class Emu3Pi0(Emu3PreTrainedModel):
             num_inference_steps: Number of denoising steps. Defaults to self.action_sample_steps.
             action_frames: Number of action frames to generate. Defaults to self.action_frames.
             action_dim: Dimension of the action. Defaults to self.action_config.action_dim or a fallback.
+            return_vlm_context: Also return the pooled contextual VLM hidden
+                state from the final joint VLM/action denoising step.
 
         Returns:
             torch.Tensor: Generated actions of shape [batch_size, action_frames, action_dim]
@@ -2315,6 +2318,17 @@ class Emu3Pi0(Emu3PreTrainedModel):
             z = z + dt * velo_t_pred  # dt is a negative scalar, velo_t_pred is [B, AF, AD]
             current_time += dt_tensor  # Update time
 
+        if return_vlm_context:
+            mask = (
+                attention_mask.to(current_vlm_h.dtype)
+                if attention_mask is not None
+                else current_vlm_h.new_ones(current_vlm_h.shape[:2])
+            ).unsqueeze(-1)
+            pooled_vlm = (
+                (current_vlm_h * mask).sum(dim=1)
+                / mask.sum(dim=1).clamp_min(1.0)
+            )
+            return z, pooled_vlm
         return z
 
     @torch.no_grad()

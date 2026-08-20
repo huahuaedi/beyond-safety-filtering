@@ -5,7 +5,7 @@
 # ~96GB) — plenty of headroom for AdamW + KL + larger group sizes, unlike the
 # 24GB local card or the 16GB V100s on this same cluster (--partition=gpu).
 
-#SBATCH --job-name=drivevla_ref_anchor_v2
+#SBATCH --job-name=drivevla_ref_anchor_v3
 #SBATCH --account=xinxia0
 #SBATCH --partition=gpu-rtx6000
 #SBATCH --gres=gpu:rtx_pro_6000_blackwell:1
@@ -72,9 +72,9 @@ export NAVSIM_METRIC_CACHE_PATH="$REPO_ROOT/navsim_data/exp/metric_cache_trainva
 # 需要真的能加载这份权重，不是只看训练日志里的 reward/kl 数字。每 RL_SAVE_EVERY 步存
 # 一次独立子目录(rl_stage1_prototype.py 现在按 step_XXXXXX 分开存，不会互相覆盖)。
 # ---------------------------------------------------------------------------
-export RL_CHECKPOINT_DIR="$REPO_ROOT/pretrained_models/DriveVLA-W0/reference_anchored_v2"
-export RL_SAVE_EVERY=25
-export RL_SAVE_STEPS=10,25,40,50
+export RL_CHECKPOINT_DIR="${RL_CHECKPOINT_DIR:-$REPO_ROOT/pretrained_models/DriveVLA-W0/reference_anchored_v3}"
+export RL_SAVE_EVERY="${RL_SAVE_EVERY:-25}"
+export RL_SAVE_STEPS="${RL_SAVE_STEPS:-10,25,40,50}"
 
 # ---------------------------------------------------------------------------
 # RL 训练超参。诊断历史(见 docs/rl_world_model_design.md 阶段 2-3):
@@ -85,21 +85,53 @@ export RL_SAVE_STEPS=10,25,40,50
 #     官方 5:5 改成 8:2 加权): 只是换了兑换比率，安全项依然能被 progress 补偿，
 #     不是真正的修法。
 # V1 step25 首次超过 baseline (0.9263)，但 step50 因尾部安全漂移降到
-# 0.9139。V2 使用两个稳定的 per-scene deployment probes，缓存 frozen
-# reference 分数；风险事件除即时 rollback 外，还触发持续衰减的 adaptive KL
-# 和 RL update 降速，目标是保住 step25 的 EP 增益并稳定到 step50。
+# 0.9139。V2 的 adaptive KL 在 40/50 步生效，但 held-out TTC 仍从 .9825
+# 降到 .8881，说明稀疏 deterministic probes + 全局 KL 不能保护场景相关的
+# 尾部行为。V3 从整个候选组收集风险暴露，并在独立 safety-only optimizer
+# step 中优先回放这些场景的 frozen-reference ODE 路径。
 # ---------------------------------------------------------------------------
-export RL_GROUP_SIZE=16
-export RL_NUM_STEPS=50
-export RL_DENOISE_STEPS=10
-export RL_KL_COEF=1.0
-export RL_NOISE_STD=0.1
-export RL_LR=1e-5
-export RL_OPTIMIZER=adamw
+export RL_GROUP_SIZE="${RL_GROUP_SIZE:-16}"
+export RL_ROLLOUT_MICRO_BATCH="${RL_ROLLOUT_MICRO_BATCH:-1}"
+export RL_SEED="${RL_SEED:-0}"
+export RL_NUM_STEPS="${RL_NUM_STEPS:-50}"
+export RL_DENOISE_STEPS="${RL_DENOISE_STEPS:-10}"
+export RL_KL_COEF="${RL_KL_COEF:-1.0}"
+export RL_NOISE_STD="${RL_NOISE_STD:-0.1}"
+export RL_LR="${RL_LR:-1e-5}"
+export RL_OPTIMIZER="${RL_OPTIMIZER:-adamw}"
 export RL_ADVANTAGE_MODE=reference_anchored
 export RL_ROLLBACK_COEF=1.0
 export RL_DEPLOYMENT_PROBES=2
-export RL_KL_BOOST=3.0
-export RL_KL_DECAY=0.9
+export RL_KL_BOOST=1.0
+export RL_KL_DECAY=0.0
+export RL_RISK_BUFFER_SIZE="${RL_RISK_BUFFER_SIZE:-32}"
+export RL_RISK_REPLAY_EVERY="${RL_RISK_REPLAY_EVERY:-1}"
+export RL_RISK_REPLAY_COEF="${RL_RISK_REPLAY_COEF:-1.0}"
+export RL_RISK_EXPOSURE_THRESHOLD="${RL_RISK_EXPOSURE_THRESHOLD:-0.05}"
+export RL_RISK_REPLAY_SAMPLING="${RL_RISK_REPLAY_SAMPLING:-priority}"
+export RL_RISK_MANIFEST="${RL_RISK_MANIFEST:-}"
+export RL_RISK_COVERAGE_MANIFEST="${RL_RISK_COVERAGE_MANIFEST:-}"
+export RL_RISK_ONLINE_INSERT="${RL_RISK_ONLINE_INSERT:-1}"
+export RL_RISK_CURRICULUM="${RL_RISK_CURRICULUM:-0}"
+export RL_RISK_SOURCE_MIX="${RL_RISK_SOURCE_MIX:-manifest:0.5,coverage:0.25,online:0.25}"
+export RL_RISK_TYPE_BALANCE="${RL_RISK_TYPE_BALANCE:-1}"
+export RL_RISK_REDUNDANCY_COEF="${RL_RISK_REDUNDANCY_COEF:-0.25}"
+export RL_RISK_PRIORITY_POWER="${RL_RISK_PRIORITY_POWER:-1.0}"
+export RL_DYNAMIC_CONSTRAINT_WEIGHTS="${RL_DYNAMIC_CONSTRAINT_WEIGHTS:-0}"
+export RL_DYNAMIC_WEIGHT_MIN="${RL_DYNAMIC_WEIGHT_MIN:-0.5}"
+export RL_DYNAMIC_WEIGHT_MAX="${RL_DYNAMIC_WEIGHT_MAX:-2.0}"
+
+# Optional deterministic execution layer for Reference-Anchored GRPO.  Keep
+# disabled unless an explicitly selected joint control/WM checkpoint is
+# supplied.  With infeasible_only, feasible policy trajectories remain bitwise
+# unchanged and only dynamics-invalid trajectories are repaired before NAVSIM
+# reward/reference comparison.
+export RL_CONTROL_ADAPTER_CHECKPOINT="${RL_CONTROL_ADAPTER_CHECKPOINT:-}"
+export RL_CONTROL_ADAPTER_MODE="${RL_CONTROL_ADAPTER_MODE:-infeasible_only}"
+export RL_CONTROL_ADAPTER_MAX_POSITION_RMSE="${RL_CONTROL_ADAPTER_MAX_POSITION_RMSE:-inf}"
+export RL_UNIFIED_CORRECTION_CHECKPOINT="${RL_UNIFIED_CORRECTION_CHECKPOINT:-}"
+export RL_UNIFIED_OUTCOME_CHECKPOINT="${RL_UNIFIED_OUTCOME_CHECKPOINT:-}"
+export RL_UNIFIED_LATENT_ROOT="${RL_UNIFIED_LATENT_ROOT:-$REPO_ROOT/navsim_data/exp/world_action_latents_full_v1}"
+export RL_UNIFIED_CORRECTION_LOGP_COEF="${RL_UNIFIED_CORRECTION_LOGP_COEF:-1.0}"
 
 srun python tools/rl_prep/rl_stage1_prototype.py
