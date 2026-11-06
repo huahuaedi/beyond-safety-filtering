@@ -1,0 +1,37 @@
+{
+  "schema_version": 1,
+  "shared": {
+    "rl_steps": 50,
+    "risk_buffer_size": 32,
+    "priority_power": 0.25,
+    "seeds": [0, 1, 2],
+    "checkpoint_selection": "fixed_step_50",
+    "condition_dim": 11
+  },
+  "experiments": [
+    {
+      "name": "static_ra3_grpo",
+      "dynamic_constraint_weights": false,
+      "quality_conditioning": false,
+      "wm_context": false
+    },
+    {
+      "name": "dynamic_ra3_grpo",
+      "dynamic_constraint_weights": true,
+      "quality_conditioning": false,
+      "wm_context": false
+    },
+    {
+      "name": "quality_conditioned_distillation",
+      "dynamic_constraint_weights": false,
+      "quality_conditioning": true,
+      "wm_context": false
+    },
+    {
+      "name": "wm_quality_conditioned_distillation",
+      "dynamic_constraint_weights": false,
+      "quality_conditioning": true,
+      "wm_context": true
+    }
+  ]
+}

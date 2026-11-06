@@ -1,0 +1,3 @@
+_target_: npz_trajectory_agent_v2.NpzTrajectoryAgent
+_convert_: all
+npz_glob: ???

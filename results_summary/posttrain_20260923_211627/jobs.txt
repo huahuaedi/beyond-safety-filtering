@@ -1,0 +1,9 @@
+prepare=61798355
+smoke=61798356
+baseline=61798357
+train=61798358
+val=61798359
+select=61798360
+test=61798361
+report=61798362
+run=/gpfs/accounts/xinxia_root/xinxia0/huamin/DriveVLA-W0-data/pretrained_models/DriveVLA-W0/posttrain_runs/posttrain_20260923_211627

@@ -1,0 +1,217 @@
+diff --git a/inference/vla/inference_action_navsim_flow_matching_vava.py b/inference/vla/inference_action_navsim_flow_matching_vava.py
+index fa0c871..93977c4 100644
+--- a/inference/vla/inference_action_navsim_flow_matching_vava.py
++++ b/inference/vla/inference_action_navsim_flow_matching_vava.py
+@@ -1,4 +1,5 @@
+ import os, sys, yaml, json, pickle, argparse
++from pathlib import Path
+ import torch
+ import torch.distributed as dist
+ import numpy as np
+@@ -16,6 +17,15 @@ from emu3.mllm import Emu3Tokenizer, Emu3Pi0, Emu3Pi0Config
+ from utils.train_pi0 import DataArguments # Import from training script
+ from datasets import Emu3DrivingVAVADataset # Import from training script
+ 
++REPO_ROOT = Path(__file__).resolve().parents[2]
++sys.path.insert(0, str(REPO_ROOT / "tools" / "rl_prep"))
++from differentiable_vehicle_model import (  # noqa: E402
++    VehicleModelConfig,
++    absolute_to_relative_se2,
++)
++from native_control_expert import execute_model_action  # noqa: E402
++from native_control_expert import initial_state_from_relative_history  # noqa: E402
++
+ # 导入配置获取函数（用于在 main 中获取配置）
+ from config import get_config
+ 
+@@ -24,14 +34,61 @@ def parse_args():
+     parser = argparse.ArgumentParser(description="Inference script for Emu3Pi0 with VAVA dataset format.")
+     parser.add_argument("--emu_hub", required=True, type=str, help="Path to the trained Emu3Pi0 model hub.")
+     parser.add_argument("--output_dir", required=True, type=str, help="Directory to save inference results.")
++    parser.add_argument(
++        "--export_vlm_context", action="store_true",
++        help="Store the pooled VLM token context required by the unified policy.",
++    )
+     parser.add_argument("--test_data_pkl", required=True, type=str, help="Path to the test data meta pickle file.")
+     parser.add_argument("--token_yaml", type=str, default=None, help="Path to the token YAML file for naming outputs.")
+     parser.add_argument("--num_inference_steps", type=int, default=None, help="Number of Pi0 inference steps.")
+     parser.add_argument("--num_workers", type=int, default=None, help="Number of dataloader workers.")
+     parser.add_argument("--config", type=str, default=None, help="Path to config YAML file.")
++    parser.add_argument(
++        "--seed", type=int, default=0,
++        help="Deterministic flow-noise seed; combined with the dataset index per scene.",
++    )
++    parser.add_argument(
++        "--native_control_checkpoint", type=str, default=None,
++        help="Action-side checkpoint whose [8,3] output represents acceleration/curvature-rate logits.",
++    )
+     return parser.parse_args()
+ 
+ 
++def load_torch_checkpoint(path):
++    try:
++        return torch.load(path, map_location="cpu", weights_only=False)
++    except TypeError as error:
++        if "weights_only" not in str(error):
++            raise
++        return torch.load(path, map_location="cpu")
++
++
++def load_native_control_weights(model, checkpoint):
++    payload = load_torch_checkpoint(checkpoint)
++    state = payload.get("action_state_dict")
++    if not isinstance(state, dict):
++        raise ValueError(f"{checkpoint}: missing action_state_dict")
++    modules = {
++        "action_expert": model.action_expert,
++        "tau_emb": model.tau_emb,
++        "action_projector": model.action_projector,
++        "state_projector": model.state_projector,
++        "action_decoder": model.action_decoder,
++    }
++    missing = sorted(set(modules) - set(state))
++    if missing:
++        raise ValueError(f"{checkpoint}: missing native-control modules {missing}")
++    for name, module in modules.items():
++        module.load_state_dict(state[name], strict=True)
++    metadata = payload.get("metadata", {})
++    if metadata.get("representation") not in {
++        "native_acceleration_curvature_rate_v1",
++        "native_acceleration_curvature_rate_v2",
++    }:
++        raise ValueError(f"{checkpoint}: unsupported representation {metadata.get('representation')!r}")
++    return metadata
++
++
+ def setup_distributed():
+     dist.init_process_group(backend='nccl')
+     rank = dist.get_rank()
+@@ -130,6 +187,22 @@ def main():
+         print("Mismatched sizes:", loading_info.get("mismatched_keys", "N/A"))
+         
+     model = model.to(device).eval()
++    native_control_metadata = None
++    native_control_config = None
++    if args.native_control_checkpoint:
++        native_control_metadata = load_native_control_weights(
++            model, args.native_control_checkpoint
++        )
++        native_control_config = VehicleModelConfig(
++            **native_control_metadata.get("vehicle_model", {})
++        )
++        model.eval()
++        if rank == 0:
++            print(
++                f"Loaded native-control checkpoint={args.native_control_checkpoint} "
++                f"representation={native_control_metadata['representation']}",
++                flush=True,
++            )
+ 
+     # ========================================================================================
+     # 5. Load external metadata (token names for saving, norm stats)
+@@ -167,8 +240,15 @@ def main():
+ 
+         num_inference_steps = args.num_inference_steps if args.num_inference_steps is not None else config.get("inference.num_inference_steps", 10)
+         
++        # Make stochastic flow sampling paired across checkpoints: the same
++        # evaluation seed and scene index always receive identical initial
++        # noise, independent of model-loading RNG consumption.
++        scene_seed = int(args.seed) * 1_000_003 + int(original_idx)
++        torch.manual_seed(scene_seed)
++        if torch.cuda.is_available():
++            torch.cuda.manual_seed_all(scene_seed)
+         with torch.no_grad():
+-            predicted_action = model.sample_actions(
++            sampled = model.sample_actions(
+                 input_ids=batch["input_ids"],
+                 attention_mask=batch["attention_mask"],
+                 pre_action=batch["pre_action"].to(torch.bfloat16),
+@@ -176,16 +256,45 @@ def main():
+                 num_inference_steps=num_inference_steps,
+                 action_frames=data_args.action_frames,
+                 action_dim=data_args.action_dim,
++                return_vlm_context=args.export_vlm_context,
+             )
++            if args.export_vlm_context:
++                predicted_action, vlm_context = sampled
++            else:
++                predicted_action = sampled
+ 
+-        # De-normalize the predicted action and remove batch dimension
+-        action_denorm = 0.5 * (predicted_action.squeeze(0) + 1) * (action_high - action_low) + action_low
++        if native_control_config is None:
++            # Standard DriveVLA output: normalized relative SE(2) waypoints.
++            action_denorm = 0.5 * (predicted_action.squeeze(0) + 1) * (action_high - action_low) + action_low
++        else:
++            # Native output: unconstrained acceleration/curvature-rate logits.
++            # The initial vehicle state comes only from observed previous
++            # actions, never from held-out future trajectories or NAVSIM labels.
++            history = batch["pre_action"].float()
++            history_denorm = 0.5 * (history + 1) * (action_high - action_low) + action_low
++            initial_state = initial_state_from_relative_history(
++                history_denorm, native_control_config
++            )
++            execution = execute_model_action(
++                predicted_action.float(), initial_state, native_control_config
++            )
++            action_denorm = absolute_to_relative_se2(
++                execution["absolute_trajectory"]
++            ).squeeze(0)
+         
+         token_name = token_list[original_idx]
+         
+         output_dict = {
+             "action": action_denorm.cpu().numpy().tolist()
+         }
++        if args.export_vlm_context:
++            output_dict["vlm_context"] = vlm_context[0].cpu().tolist()
++        if native_control_config is not None:
++            output_dict["native_control"] = {
++                "controls": execution["controls"].squeeze(0).cpu().numpy().tolist(),
++                "initial_state_source": "observed_pre_action",
++                "checkpoint": args.native_control_checkpoint,
++            }
+ 
+         if gt_action is not None:
+             gt_action_denorm = 0.5 * (gt_action.squeeze(0) + 1) * (action_high - action_low) + action_low
+diff --git a/reference/Emu3/emu3/mllm/modeling_emu3.py b/reference/Emu3/emu3/mllm/modeling_emu3.py
+index 3a5917a..3b3886c 100644
+--- a/reference/Emu3/emu3/mllm/modeling_emu3.py
++++ b/reference/Emu3/emu3/mllm/modeling_emu3.py
+@@ -2215,7 +2215,8 @@ class Emu3Pi0(Emu3PreTrainedModel):
+             num_inference_steps: Optional[int] = None,
+             action_frames: Optional[int] = None,
+             action_dim: Optional[int] = None,
+-    ) -> torch.Tensor:
++            return_vlm_context: bool = False,
++    ) -> Union[torch.Tensor, Tuple[torch.Tensor, torch.Tensor]]:
+         """
+         Sample actions using iterative denoising with shared VLM-Action Expert attention,
+         mimicking the training forward pass and pi0-style Euler sampling.
+@@ -2230,6 +2231,8 @@ class Emu3Pi0(Emu3PreTrainedModel):
+             num_inference_steps: Number of denoising steps. Defaults to self.action_sample_steps.
+             action_frames: Number of action frames to generate. Defaults to self.action_frames.
+             action_dim: Dimension of the action. Defaults to self.action_config.action_dim or a fallback.
++            return_vlm_context: Also return the pooled contextual VLM hidden
++                state from the final joint VLM/action denoising step.
+ 
+         Returns:
+             torch.Tensor: Generated actions of shape [batch_size, action_frames, action_dim]
+@@ -2315,6 +2318,17 @@ class Emu3Pi0(Emu3PreTrainedModel):
+             z = z + dt * velo_t_pred  # dt is a negative scalar, velo_t_pred is [B, AF, AD]
+             current_time += dt_tensor  # Update time
+ 
++        if return_vlm_context:
++            mask = (
++                attention_mask.to(current_vlm_h.dtype)
++                if attention_mask is not None
++                else current_vlm_h.new_ones(current_vlm_h.shape[:2])
++            ).unsqueeze(-1)
++            pooled_vlm = (
++                (current_vlm_h * mask).sum(dim=1)
++                / mask.sum(dim=1).clamp_min(1.0)
++            )
++            return z, pooled_vlm
+         return z
+ 
+     @torch.no_grad()

@@ -1,0 +1,22 @@
+{
+  "train_scenes": 7021,
+  "validation_scenes": 150,
+  "final_eval_scenes": 286,
+  "training_steps": 200,
+  "group_size": 16,
+  "seed": 0,
+  "learning_rate": 1e-05,
+  "reward": "real NAVSIM sub-scores",
+  "advantage": "reference_anchored hard_sign_bounded_v1",
+  "kl": "normalized mean-log-ratio surrogate; not exact policy KL",
+  "trainable": "Action Expert and action-side modules; VLM frozen",
+  "wm_manifest": false,
+  "checkpoints": [
+    50,
+    100,
+    150,
+    200
+  ],
+  "selection": "highest validation PDMS among checkpoints not below baseline mean NC/DAC/TTC; baseline fallback",
+  "note": "final evaluation is disjoint from this run training, but this dataset has prior research use"
+}

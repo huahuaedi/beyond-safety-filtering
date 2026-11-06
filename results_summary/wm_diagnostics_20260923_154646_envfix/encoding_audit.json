@@ -1,0 +1,7219 @@
+{
+  "summary": {
+    "candidates": 12800,
+    "clipped_candidates": 2279,
+    "clipped_elements": 4425,
+    "elements": 307200,
+    "unsafe": 674,
+    "collision": 50,
+    "clipped_unsafe": 53,
+    "unclipped_unsafe": 621,
+    "aliased_candidates": 62,
+    "conflicting_label_candidates": 0
+  },
+  "scenes": [
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11553183943033218,
+        0.11448565870523453,
+        0.057884782552719116,
+        0.02484896220266819
+      ],
+      "scene": "01ee3dda306f503f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07086949050426483,
+        0.09698890149593353,
+        0.04303892329335213,
+        0.016075141727924347
+      ],
+      "scene": "05bd0e49956b5e72",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10806769132614136,
+        0.10422985255718231,
+        0.04526212811470032,
+        0.01529984176158905
+      ],
+      "scene": "05ef027133f25661",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 19,
+      "collision": 3,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 19,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12882070243358612,
+        0.08522045612335205,
+        0.02568216249346733,
+        0.008991699665784836
+      ],
+      "scene": "087e749e016255c2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 62,
+      "clipped_elements": 201,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.023707613348960876,
+        0.018775075674057007
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11319044977426529,
+        0.1291656494140625,
+        0.051877472549676895,
+        0.020833253860473633
+      ],
+      "scene": "0a97b2885a815bab",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.14476993680000305,
+        0.12055638432502747,
+        0.061581842601299286,
+        0.019180389121174812
+      ],
+      "scene": "0acdbb8b8d1853ae",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1108580157160759,
+        0.1316065490245819,
+        0.052567169070243835,
+        0.016048550605773926
+      ],
+      "scene": "0edb8198064b5235",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 51,
+      "clipped_elements": 132,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 1,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.2185821533203125,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12550143897533417,
+        0.1317373812198639,
+        0.04447654262185097,
+        0.01770450547337532
+      ],
+      "scene": "0ef2970832d95ecf",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11337925493717194,
+        0.10771584510803223,
+        0.05153700336813927,
+        0.019257856532931328
+      ],
+      "scene": "0f6ec8cb57b15d94",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08571536839008331,
+        0.12001694738864899,
+        0.04173111170530319,
+        0.018934695050120354
+      ],
+      "scene": "0f88fb335ab95b5c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 21,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 21,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.060325637459754944,
+        0.07686325162649155,
+        0.030251845717430115,
+        0.013563855551183224
+      ],
+      "scene": "1035067f7dd0573d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 52,
+      "clipped_elements": 105,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.34001657366752625,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11209666728973389,
+        0.09996393322944641,
+        0.034334346652030945,
+        0.014170682057738304
+      ],
+      "scene": "106da21b5dfd5c7e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 10,
+      "clipped_elements": 10,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.12143449485301971,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10125885903835297,
+        0.09035304933786392,
+        0.03722216933965683,
+        0.01550511084496975
+      ],
+      "scene": "110761901862552c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11078346520662308,
+        0.06522982567548752,
+        0.040065959095954895,
+        0.014363822527229786
+      ],
+      "scene": "1327b415da525e2c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 18,
+      "clipped_elements": 19,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.17000828683376312,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09290164709091187,
+        0.103521429002285,
+        0.04298170283436775,
+        0.015884416177868843
+      ],
+      "scene": "1404c4dce2805593",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 52,
+      "clipped_elements": 106,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.31572967767715454,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.18238765001296997,
+        0.15034219622612,
+        0.07512234151363373,
+        0.02650158479809761
+      ],
+      "scene": "14982f46dd7b580e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.14451652765274048,
+        0.11543925851583481,
+        0.039919596165418625,
+        0.017268897965550423
+      ],
+      "scene": "15c86dea97225990",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07561998069286346,
+        0.10061721503734589,
+        0.06780091673135757,
+        0.025023700669407845
+      ],
+      "scene": "165e96e510d1580d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12970063090324402,
+        0.10148540884256363,
+        0.03498874604701996,
+        0.01336282305419445
+      ],
+      "scene": "1685104762e35fee",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 4,
+      "clipped_elements": 4,
+      "elements": 1536,
+      "unsafe": 32,
+      "collision": 0,
+      "clipped_unsafe": 3,
+      "unclipped_unsafe": 29,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.010160401463508606,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12574569880962372,
+        0.12336617708206177,
+        0.04480375349521637,
+        0.019093241542577744
+      ],
+      "scene": "19aa3f6575da5b32",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.090382881462574,
+        0.10753600299358368,
+        0.04429253190755844,
+        0.0173049196600914
+      ],
+      "scene": "1aa5e52e7330578f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12421604245901108,
+        0.08164241164922714,
+        0.03818819299340248,
+        0.014833219349384308
+      ],
+      "scene": "1ab36cdc74a754ad",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09832023084163666,
+        0.09540542960166931,
+        0.048354312777519226,
+        0.015609964728355408
+      ],
+      "scene": "1b2370366a8a50bc",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.23880533874034882,
+        0.12388943880796432,
+        0.05601377785205841,
+        0.019821472465991974
+      ],
+      "scene": "1b31ffd5f3ec5f5d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 11,
+      "clipped_elements": 11,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.09714759886264801,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11721040308475494,
+        0.1341204196214676,
+        0.05830007418990135,
+        0.020177479833364487
+      ],
+      "scene": "212ba92d4a515c07",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 3,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 3,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08914519101381302,
+        0.11983177065849304,
+        0.043295301496982574,
+        0.016744736582040787
+      ],
+      "scene": "27b0f586eaf15d4e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07304196059703827,
+        0.09596117585897446,
+        0.048088543117046356,
+        0.01699509657919407
+      ],
+      "scene": "27b4d037854451f6",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08172324299812317,
+        0.08408975601196289,
+        0.02990010567009449,
+        0.014138253405690193
+      ],
+      "scene": "28f70bd9ad9f52b2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 61,
+      "clipped_elements": 129,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.025401026010513306,
+        0.02021932601928711
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11995075643062592,
+        0.10500381886959076,
+        0.03296583890914917,
+        0.011781975626945496
+      ],
+      "scene": "292db2192da2505a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 48,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 48,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1146017536520958,
+        0.15484113991260529,
+        0.059510309249162674,
+        0.022864870727062225
+      ],
+      "scene": "2bbd059da263592b",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.057503167539834976,
+        0.0812767818570137,
+        0.03377191722393036,
+        0.01421479880809784
+      ],
+      "scene": "332171f6c897516e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 52,
+      "clipped_elements": 84,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.38859036564826965,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11268904060125351,
+        0.1289704293012619,
+        0.06455004960298538,
+        0.022972330451011658
+      ],
+      "scene": "345b59f6aea559f4",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09540238976478577,
+        0.1048378050327301,
+        0.04226670041680336,
+        0.016308648511767387
+      ],
+      "scene": "34ca76815b025879",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 2,
+      "clipped_elements": 2,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.00433272123336792
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07256890088319778,
+        0.11093156039714813,
+        0.039765726774930954,
+        0.01387670636177063
+      ],
+      "scene": "34ca974e07e75aa5",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07787422835826874,
+        0.10357717424631119,
+        0.043738432228565216,
+        0.015699012205004692
+      ],
+      "scene": "36c226b076935478",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.03606009855866432,
+        0.05014926567673683,
+        0.02707919105887413,
+        0.012909002602100372
+      ],
+      "scene": "380ec30d5fdd5368",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 18,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 18,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09491903334856033,
+        0.12752190232276917,
+        0.048455145210027695,
+        0.019053449854254723
+      ],
+      "scene": "383f02350a62555e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07217267155647278,
+        0.09334247559309006,
+        0.02954423613846302,
+        0.013163152150809765
+      ],
+      "scene": "3931796fba53593d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 11,
+      "clipped_elements": 12,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.010160431265830994,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.14007385075092316,
+        0.10117840766906738,
+        0.04038187116384506,
+        0.01535404659807682
+      ],
+      "scene": "3bd6ae9f21745bf8",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.22324979305267334,
+        0.09777812659740448,
+        0.049816906452178955,
+        0.015065441839396954
+      ],
+      "scene": "3c84f4df48f5500b",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 6,
+      "clipped_elements": 6,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.016934022307395935,
+        0.007221192121505737
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.18518111109733582,
+        0.08066485822200775,
+        0.03365200757980347,
+        0.012727666646242142
+      ],
+      "scene": "3d043e2f2ae25dad",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08588799834251404,
+        0.08325503766536713,
+        0.031151294708251953,
+        0.012896865606307983
+      ],
+      "scene": "3d246b14692b5c9d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.09714759886264801,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11695435643196106,
+        0.12782761454582214,
+        0.04436293989419937,
+        0.016319599002599716
+      ],
+      "scene": "3e27d7b7c15f557c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 18,
+      "clipped_elements": 20,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.17000828683376312,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09187156707048416,
+        0.10518310964107513,
+        0.0378209725022316,
+        0.0165391955524683
+      ],
+      "scene": "3f4d95a745ac552a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09223946928977966,
+        0.09874194860458374,
+        0.03727412968873978,
+        0.015722449868917465
+      ],
+      "scene": "3fa54b9494b55d28",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 18,
+      "clipped_elements": 22,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.21858207881450653,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1292906403541565,
+        0.0927051305770874,
+        0.033228982239961624,
+        0.013257140293717384
+      ],
+      "scene": "43f71e5866ce52c1",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 46,
+      "clipped_elements": 63,
+      "elements": 1536,
+      "unsafe": 8,
+      "collision": 0,
+      "clipped_unsafe": 8,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.01862742006778717,
+        0.008665427565574646
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07052495330572128,
+        0.05218474194407463,
+        0.03690091893076897,
+        0.015199772082269192
+      ],
+      "scene": "4558d8925fc55497",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11012737452983856,
+        0.11858046054840088,
+        0.054005734622478485,
+        0.019265107810497284
+      ],
+      "scene": "45ba44ddb35959ab",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 25,
+      "clipped_elements": 29,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.17000828683376312,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1040906310081482,
+        0.10860135406255722,
+        0.045279454439878464,
+        0.017790958285331726
+      ],
+      "scene": "4913112c3b7b517d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05967852845788002,
+        0.0801255851984024,
+        0.03639645501971245,
+        0.014081854373216629
+      ],
+      "scene": "4a6684b54bda5fee",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09741088002920151,
+        0.09688714891672134,
+        0.04144470766186714,
+        0.017346017062664032
+      ],
+      "scene": "4ae19e317e725bad",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.04857379570603371,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.127358078956604,
+        0.10945184528827667,
+        0.03817847743630409,
+        0.015399541705846786
+      ],
+      "scene": "4baba04d4e7d5039",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 8,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 8,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.21850478649139404,
+        0.08262671530246735,
+        0.04074333235621452,
+        0.015164642594754696
+      ],
+      "scene": "4c1205c3cd395ed2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10700654983520508,
+        0.12934014201164246,
+        0.04634544998407364,
+        0.019332360476255417
+      ],
+      "scene": "4de80769bc115919",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.148609459400177,
+        0.09206008911132812,
+        0.041168998926877975,
+        0.01810588873922825
+      ],
+      "scene": "4e23ee0cd28a587a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 51,
+      "clipped_elements": 105,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.025401026010513306,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.16866528987884521,
+        0.08774163573980331,
+        0.03237590938806534,
+        0.01380038820207119
+      ],
+      "scene": "4f0352a2fc805234",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07028437405824661,
+        0.10220520943403244,
+        0.04137571156024933,
+        0.017703216522932053
+      ],
+      "scene": "52e0404827525b32",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 17,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 17,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12397780269384384,
+        0.10434180498123169,
+        0.045420125126838684,
+        0.015715843066573143
+      ],
+      "scene": "5322fcbcde1c5960",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 44,
+      "clipped_elements": 50,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.26715588569641113,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09781064093112946,
+        0.09706103056669235,
+        0.05658232420682907,
+        0.0176288653165102
+      ],
+      "scene": "554164350ee459d9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.20385004580020905,
+        0.1435879021883011,
+        0.058242034167051315,
+        0.02335446886718273
+      ],
+      "scene": "55dafb87187855e9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 12,
+      "clipped_elements": 12,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.12143449485301971,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 62,
+      "aliased_candidates": 4,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11499373614788055,
+        0.08752986788749695,
+        0.043690573424100876,
+        0.017085757106542587
+      ],
+      "scene": "560b5a2d743755df",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 35,
+      "clipped_elements": 39,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.38859036564826965,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.2087266892194748,
+        0.10246459394693375,
+        0.04346424713730812,
+        0.01699533872306347
+      ],
+      "scene": "58a3b40472f755ec",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.136213019490242,
+        0.16057829558849335,
+        0.07153577357530594,
+        0.021002667024731636
+      ],
+      "scene": "59a6083b68095ae4",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 5,
+      "clipped_elements": 5,
+      "elements": 1536,
+      "unsafe": 3,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 3,
+      "max_abs_change_per_coordinate": [
+        0.0728607028722763,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11229517310857773,
+        0.11262912303209305,
+        0.04508974403142929,
+        0.016642054542899132
+      ],
+      "scene": "5a10cb949913560e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 47,
+      "clipped_elements": 82,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.24286898970603943,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11727903038263321,
+        0.11413709819316864,
+        0.039301153272390366,
+        0.016528230160474777
+      ],
+      "scene": "5b19dc2be4b752c7",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 55,
+      "clipped_elements": 110,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.26715588569641113,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12065014988183975,
+        0.12538476288318634,
+        0.04375581443309784,
+        0.01396995596587658
+      ],
+      "scene": "5dd66fecd1b4523b",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0851530060172081,
+        0.10009963065385818,
+        0.04232935234904289,
+        0.01639370433986187
+      ],
+      "scene": "5eae9bd66a135ccd",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.13443152606487274,
+        0.10381752997636795,
+        0.03637111186981201,
+        0.014298271387815475
+      ],
+      "scene": "5f85e1412f725ca2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 38,
+      "clipped_elements": 45,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.21858207881450653,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1746588498353958,
+        0.12478475272655487,
+        0.053769614547491074,
+        0.0203225240111351
+      ],
+      "scene": "5f9c024631b65e3b",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08704366534948349,
+        0.0876736119389534,
+        0.03956213593482971,
+        0.017152322456240654
+      ],
+      "scene": "623ea6e71f0a5078",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 55,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 55,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11852823942899704,
+        0.1131170243024826,
+        0.0357498899102211,
+        0.014089606702327728
+      ],
+      "scene": "66ea6dd78d4857f8",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 17,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 17,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08734628558158875,
+        0.09924612939357758,
+        0.04982299357652664,
+        0.01716415025293827
+      ],
+      "scene": "692aa9353d3f57f5",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 13,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 13,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08535361289978027,
+        0.10957900434732437,
+        0.05286663770675659,
+        0.020235614851117134
+      ],
+      "scene": "6a0116aeef995765",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.13474337756633759,
+        0.09944780170917511,
+        0.035698000341653824,
+        0.015499092638492584
+      ],
+      "scene": "6a0c22bca02857a4",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 14,
+      "collision": 14,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 14,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05180737003684044,
+        0.06752070039510727,
+        0.03326113894581795,
+        0.013223756104707718
+      ],
+      "scene": "6b186fb1303c5d40",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08207831531763077,
+        0.10439109802246094,
+        0.046508803963661194,
+        0.01850050687789917
+      ],
+      "scene": "6b270e60acbf5bc6",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 56,
+      "clipped_elements": 93,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.010160401463508606,
+        0.024552032351493835
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.2580240070819855,
+        0.12154591083526611,
+        0.046736035495996475,
+        0.019084393978118896
+      ],
+      "scene": "6be3263ee55a57db",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 48,
+      "clipped_elements": 79,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.00846700370311737,
+        0.0187750905752182
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10198250412940979,
+        0.12825052440166473,
+        0.048694320023059845,
+        0.02154301106929779
+      ],
+      "scene": "6e2b0e92a2ea58ee",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07621781527996063,
+        0.09604675322771072,
+        0.032346371561288834,
+        0.011551931500434875
+      ],
+      "scene": "6e3564bd69f356af",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 64,
+      "clipped_elements": 216,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.040641650557518005,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1758965104818344,
+        0.11507298052310944,
+        0.054181210696697235,
+        0.021815646439790726
+      ],
+      "scene": "6ffe7a0bfdde512a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 12,
+      "clipped_elements": 12,
+      "elements": 1536,
+      "unsafe": 37,
+      "collision": 12,
+      "clipped_unsafe": 3,
+      "unclipped_unsafe": 34,
+      "max_abs_change_per_coordinate": [
+        0.24286898970603943,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.15363050997257233,
+        0.10206424444913864,
+        0.0415622815489769,
+        0.016550520434975624
+      ],
+      "scene": "7009121fb1685f25",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09158169478178024,
+        0.10008559376001358,
+        0.04226110503077507,
+        0.01576775498688221
+      ],
+      "scene": "71440a24d6095aa9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05238044634461403,
+        0.08351421356201172,
+        0.03570736572146416,
+        0.014921355061233044
+      ],
+      "scene": "725b9795bb345881",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 3,
+      "clipped_elements": 3,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.12143468856811523,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.18746666610240936,
+        0.09011869132518768,
+        0.04793744161725044,
+        0.016792556270956993
+      ],
+      "scene": "729f7941ed385c5f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10379732400178909,
+        0.11370912939310074,
+        0.0439150333404541,
+        0.019589221104979515
+      ],
+      "scene": "7423d156df485c8b",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09611394256353378,
+        0.08621955662965775,
+        0.02790437638759613,
+        0.012215469032526016
+      ],
+      "scene": "74a8e719b4f055be",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 21,
+      "clipped_elements": 26,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.010160401463508606,
+        0.010109663009643555
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08209909498691559,
+        0.11553497612476349,
+        0.0412093885242939,
+        0.019954677671194077
+      ],
+      "scene": "755751098c88566f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1192009225487709,
+        0.10500513017177582,
+        0.03951171785593033,
+        0.013869068585336208
+      ],
+      "scene": "75863610b0265cbc",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 42,
+      "clipped_elements": 47,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.19429518282413483,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1334286332130432,
+        0.10289068520069122,
+        0.042449116706848145,
+        0.016483008861541748
+      ],
+      "scene": "78165ec8d90d5a3c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05514857918024063,
+        0.08012500405311584,
+        0.03276956453919411,
+        0.01664678379893303
+      ],
+      "scene": "79a0c2d86bda5390",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11169940233230591,
+        0.1241694763302803,
+        0.04358353838324547,
+        0.01564919762313366
+      ],
+      "scene": "7c3a0c8fefdd54dd",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 15,
+      "clipped_elements": 16,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.21858207881450653,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07763798534870148,
+        0.08897274732589722,
+        0.03682975843548775,
+        0.01336392480880022
+      ],
+      "scene": "7cbe66ece5de5d91",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 22,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 22,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1094324141740799,
+        0.14375106990337372,
+        0.04685737192630768,
+        0.021759208291769028
+      ],
+      "scene": "7d479028b2415d7c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.20248247683048248,
+        0.1194215938448906,
+        0.05442992225289345,
+        0.018643824383616447
+      ],
+      "scene": "80f88f80035c5531",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 5,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 5,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1611516922712326,
+        0.15565380454063416,
+        0.06273157894611359,
+        0.022329598665237427
+      ],
+      "scene": "814b66de299e517a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.165871262550354,
+        0.09641267359256744,
+        0.053101565688848495,
+        0.019488278776407242
+      ],
+      "scene": "81ba98b89f5e514e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10729698836803436,
+        0.114340640604496,
+        0.034415166825056076,
+        0.01608799584209919
+      ],
+      "scene": "8821aaa5459d5e8c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07194390147924423,
+        0.09273499995470047,
+        0.03184628486633301,
+        0.012942412868142128
+      ],
+      "scene": "88d2435c977f53c7",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 46,
+      "clipped_elements": 75,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.24286898970603943,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1397038847208023,
+        0.1294461339712143,
+        0.044460173696279526,
+        0.017444292083382607
+      ],
+      "scene": "8ad49db7a3cb57cc",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0626080110669136,
+        0.0598805770277977,
+        0.033850979059934616,
+        0.01573963277041912
+      ],
+      "scene": "8b92199c55f250c6",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08983064442873001,
+        0.0923040434718132,
+        0.03302224725484848,
+        0.013337350450456142
+      ],
+      "scene": "8bb23e440d665df0",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 61,
+      "clipped_elements": 146,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.29144278168678284,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09085713326931,
+        0.11260392516851425,
+        0.051050473004579544,
+        0.01673980802297592
+      ],
+      "scene": "8c066e9d6ef657f5",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 1,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09616323560476303,
+        0.09261529892683029,
+        0.03440999984741211,
+        0.013584623113274574
+      ],
+      "scene": "8c9e837ddd4c5efc",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07239775359630585,
+        0.0710572749376297,
+        0.03123108111321926,
+        0.012540023773908615
+      ],
+      "scene": "8d03d2eefea8570a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 49,
+      "clipped_elements": 72,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.21858207881450653,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10314410924911499,
+        0.12139341235160828,
+        0.04482363536953926,
+        0.020154355093836784
+      ],
+      "scene": "8dcffa7d2fe75671",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.052680302411317825,
+        0.07152250409126282,
+        0.03208635002374649,
+        0.015182510949671268
+      ],
+      "scene": "8fc55199e2a45f9e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.2281932234764099,
+        0.09823128581047058,
+        0.03385279327630997,
+        0.013774222694337368
+      ],
+      "scene": "91609c0ef1735eac",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 62,
+      "clipped_elements": 157,
+      "elements": 1536,
+      "unsafe": 6,
+      "collision": 0,
+      "clipped_unsafe": 6,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.03386799991130829,
+        0.018775075674057007
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12826910614967346,
+        0.11797573417425156,
+        0.03443904221057892,
+        0.013525811024010181
+      ],
+      "scene": "92000d52f308520c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10685287415981293,
+        0.12107613682746887,
+        0.046427298337221146,
+        0.020871974527835846
+      ],
+      "scene": "938c9d4a1b2a56ba",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 13,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 13,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.16270329058170319,
+        0.16641636192798615,
+        0.06849212199449539,
+        0.01936129294335842
+      ],
+      "scene": "93b6318f8d155bf9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11583949625492096,
+        0.10634474456310272,
+        0.03678081929683685,
+        0.013112818822264671
+      ],
+      "scene": "953e9d45f68d5056",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 63,
+      "clipped_elements": 153,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.006773591041564941,
+        0.021663546562194824
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1456969529390335,
+        0.06643064320087433,
+        0.04098944365978241,
+        0.0163145549595356
+      ],
+      "scene": "95c3219b0dbe599a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0033868104219436646,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1273341178894043,
+        0.09807977080345154,
+        0.044374801218509674,
+        0.01593046262860298
+      ],
+      "scene": "9806c62cd3ae51ec",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.14488977193832397,
+        0.12417354434728622,
+        0.04529275372624397,
+        0.017603522166609764
+      ],
+      "scene": "9989d09899585514",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10909044742584229,
+        0.0877886638045311,
+        0.044596027582883835,
+        0.015420413576066494
+      ],
+      "scene": "9b9ef8e62693568a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 58,
+      "clipped_elements": 112,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.29144278168678284,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.20046797394752502,
+        0.10098186135292053,
+        0.03584475442767143,
+        0.017564624547958374
+      ],
+      "scene": "9d8bbe7081805aff",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.22568067908287048,
+        0.12073303759098053,
+        0.05127454176545143,
+        0.022307688370347023
+      ],
+      "scene": "9ddd97097aad547e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 27,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 27,
+      "max_abs_change_per_coordinate": [
+        0.6071724891662598,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11466830223798752,
+        0.11169956624507904,
+        0.03377701714634895,
+        0.013569030910730362
+      ],
+      "scene": "9eade1a79dfd5ce7",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 15,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 15,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05879953131079674,
+        0.09393953531980515,
+        0.03356681764125824,
+        0.014246533624827862
+      ],
+      "scene": "9ee54911f7dc57b5",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 55,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 55,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1173800528049469,
+        0.08208733052015305,
+        0.04245186597108841,
+        0.016999907791614532
+      ],
+      "scene": "a0d22a413a1a5e04",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0629977434873581,
+        0.09561404585838318,
+        0.0483408086001873,
+        0.017723198980093002
+      ],
+      "scene": "a3d75fdf9a7f55d4",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 10,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 10,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09330359101295471,
+        0.1205766499042511,
+        0.04835990071296692,
+        0.021005801856517792
+      ],
+      "scene": "a7995c1f914c5d0d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09158100932836533,
+        0.11866383999586105,
+        0.04261119291186333,
+        0.01594201847910881
+      ],
+      "scene": "a8867ae704b95ce9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 22,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 22,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10154025256633759,
+        0.08374479413032532,
+        0.03950681909918785,
+        0.01601608842611313
+      ],
+      "scene": "aa43ca401668511c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 34,
+      "clipped_elements": 39,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.12143449485301971,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09669796377420425,
+        0.10883402079343796,
+        0.042894817888736725,
+        0.018121149390935898
+      ],
+      "scene": "ae23d762d2b251b9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 7,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 7,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08435473591089249,
+        0.07195158302783966,
+        0.031362853944301605,
+        0.01352864969521761
+      ],
+      "scene": "aede2b5b67735e56",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 7,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 7,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09989209473133087,
+        0.08821779489517212,
+        0.03790321946144104,
+        0.017171455547213554
+      ],
+      "scene": "b0a5fb3f1f9b5584",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10458812117576599,
+        0.11675156652927399,
+        0.056116338819265366,
+        0.020861772820353508
+      ],
+      "scene": "b3f5693af3db5984",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09861823171377182,
+        0.10749638080596924,
+        0.04070402309298515,
+        0.015706561505794525
+      ],
+      "scene": "b484cf070f11548d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 4,
+      "clipped_elements": 4,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0728607028722763,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0954408198595047,
+        0.1024550050497055,
+        0.04697875306010246,
+        0.02134108729660511
+      ],
+      "scene": "b63aa6d162c05f75",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12019482254981995,
+        0.09707663208246231,
+        0.03701489046216011,
+        0.01444432232528925
+      ],
+      "scene": "b88e43468d1f599a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 62,
+      "clipped_elements": 176,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.29144278168678284,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 61,
+      "aliased_candidates": 6,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07856498658657074,
+        0.10399256646633148,
+        0.03910228610038757,
+        0.014339477755129337
+      ],
+      "scene": "bbd82b6f12d650e0",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09772741049528122,
+        0.1267801970243454,
+        0.06025023013353348,
+        0.02035428397357464
+      ],
+      "scene": "bc1eec80f62d5318",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 3,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 3,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10153103619813919,
+        0.08188748359680176,
+        0.035369109362363815,
+        0.013412130065262318
+      ],
+      "scene": "bc7b7c9775f854a2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.024286899715662003,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1646081805229187,
+        0.10111843049526215,
+        0.04799802228808403,
+        0.01622363179922104
+      ],
+      "scene": "bccc65688f715264",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 34,
+      "clipped_elements": 37,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.21858207881450653,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08455105870962143,
+        0.09598028659820557,
+        0.042621511965990067,
+        0.015965141355991364
+      ],
+      "scene": "c0f10f128cc65c62",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09752587229013443,
+        0.0750153437256813,
+        0.03726024925708771,
+        0.014626957476139069
+      ],
+      "scene": "c2986602ad4a5537",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.13990356028079987,
+        0.15442700684070587,
+        0.06141402944922447,
+        0.021750327199697495
+      ],
+      "scene": "c6064df71ef257d2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 3,
+      "clipped_elements": 3,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.12143449485301971,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08729720860719681,
+        0.1218247041106224,
+        0.059638556092977524,
+        0.021720552816987038
+      ],
+      "scene": "cd21b22d117855a1",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.13484258949756622,
+        0.10025235265493393,
+        0.04096635803580284,
+        0.015110986307263374
+      ],
+      "scene": "cdec140f9361552f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08515448868274689,
+        0.12322128564119339,
+        0.052057042717933655,
+        0.017048168927431107
+      ],
+      "scene": "cf16b1d3252e5b07",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.22534646093845367,
+        0.111309714615345,
+        0.04364854097366333,
+        0.015596611425280571
+      ],
+      "scene": "cf17aae67738597a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11898557096719742,
+        0.12417484819889069,
+        0.04773968830704689,
+        0.01687655784189701
+      ],
+      "scene": "d005557921725d7d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12520170211791992,
+        0.05327311158180237,
+        0.0221541877835989,
+        0.0101172449067235
+      ],
+      "scene": "d0302eff769659ab",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 12,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 12,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.13138139247894287,
+        0.1451837420463562,
+        0.046409424394369125,
+        0.015780236572027206
+      ],
+      "scene": "d261b897ccb952f6",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12922382354736328,
+        0.14705829322338104,
+        0.05197867751121521,
+        0.016980601474642754
+      ],
+      "scene": "d267c26f57345802",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08428358286619186,
+        0.10844146460294724,
+        0.04868825897574425,
+        0.02019307017326355
+      ],
+      "scene": "d4e3e171314b5d6e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 4,
+      "clipped_elements": 4,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.005776941776275635
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10201956331729889,
+        0.11851437389850616,
+        0.04657348617911339,
+        0.02018684707581997
+      ],
+      "scene": "d7313a4c17355bc2",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0973079651594162,
+        0.11731915175914764,
+        0.04225336015224457,
+        0.01944686286151409
+      ],
+      "scene": "d79aeb6344d9554d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08865560591220856,
+        0.0996946394443512,
+        0.04645368456840515,
+        0.016692301258444786
+      ],
+      "scene": "d7aa6b013c7c56ec",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11911024153232574,
+        0.10229960083961487,
+        0.05001388117671013,
+        0.020141825079917908
+      ],
+      "scene": "da7b937f27475d3a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 46,
+      "clipped_elements": 64,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.017330840229988098
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10850220918655396,
+        0.10663389414548874,
+        0.049928177148103714,
+        0.019476525485515594
+      ],
+      "scene": "dbb0bc5f01f554a7",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.28180962800979614,
+        0.0873870849609375,
+        0.03036539815366268,
+        0.012968805618584156
+      ],
+      "scene": "dd33cc7784875a1f",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 64,
+      "clipped_elements": 277,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0254010409116745,
+        0.021663546562194824
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08153785020112991,
+        0.08377882838249207,
+        0.03274530917406082,
+        0.01403347309678793
+      ],
+      "scene": "de2b17b143be52ea",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 5,
+      "clipped_elements": 5,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.010109663009643555
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12042397260665894,
+        0.11300788074731827,
+        0.04620521515607834,
+        0.016603557392954826
+      ],
+      "scene": "e051ec8b2dd75dfb",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 12,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 12,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08252259343862534,
+        0.11125428974628448,
+        0.03870236873626709,
+        0.01601502113044262
+      ],
+      "scene": "e1311f6af7865f9d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08546490967273712,
+        0.10532835870981216,
+        0.04649541527032852,
+        0.01792127825319767
+      ],
+      "scene": "e4e084120a4b569c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07623599469661713,
+        0.092946857213974,
+        0.03910844400525093,
+        0.017303666099905968
+      ],
+      "scene": "e6689476edb75f26",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.29144287109375,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11265110224485397,
+        0.08707861602306366,
+        0.03611981123685837,
+        0.013564946129918098
+      ],
+      "scene": "e84c13ae23da56dd",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 48,
+      "clipped_elements": 68,
+      "elements": 1536,
+      "unsafe": 11,
+      "collision": 0,
+      "clipped_unsafe": 11,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.015240609645843506,
+        0.0187750905752182
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.25881725549697876,
+        0.10533781349658966,
+        0.04164454713463783,
+        0.014625276438891888
+      ],
+      "scene": "eabbc60ba8a15e09",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 43,
+      "clipped_elements": 53,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.010160401463508606,
+        0.0187750905752182
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1960107386112213,
+        0.1667224019765854,
+        0.060493774712085724,
+        0.024465205147862434
+      ],
+      "scene": "eb0b6260975352f9",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 62,
+      "aliased_candidates": 4,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12931005656719208,
+        0.09957653284072876,
+        0.04359329491853714,
+        0.016110746189951897
+      ],
+      "scene": "ed137f88c2eb5ba5",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08600489050149918,
+        0.09256722778081894,
+        0.038091354072093964,
+        0.015573558397591114
+      ],
+      "scene": "ed3ce0718e4d51b3",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 9,
+      "clipped_elements": 10,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.007221192121505737
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10869324207305908,
+        0.11157489567995071,
+        0.048917412757873535,
+        0.01791522093117237
+      ],
+      "scene": "ef58db7e40785866",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05170940235257149,
+        0.06724676489830017,
+        0.023450177162885666,
+        0.011640138924121857
+      ],
+      "scene": "ef793be945db528d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.06572303175926208,
+        0.06291824579238892,
+        0.0363503061234951,
+        0.015828801319003105
+      ],
+      "scene": "efe6cfa0e6a85a6e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 58,
+      "clipped_elements": 94,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.24286898970603943,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 62,
+      "aliased_candidates": 4,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1033979281783104,
+        0.07472975552082062,
+        0.043740127235651016,
+        0.020250383764505386
+      ],
+      "scene": "f0e81ac4061c5e5d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 45,
+      "clipped_elements": 61,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.016934022307395935,
+        0.011553898453712463
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.17639568448066711,
+        0.09923260658979416,
+        0.034815240651369095,
+        0.012462527491152287
+      ],
+      "scene": "f26d6163e4ae50e4",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 37,
+      "clipped_elements": 51,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 1,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.02201424539089203,
+        0.008665412664413452
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1535571664571762,
+        0.08778711408376694,
+        0.03745273873209953,
+        0.014841769821941853
+      ],
+      "scene": "f30481725ab5566d",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 23,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 23,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12485583126544952,
+        0.11628174036741257,
+        0.06225557252764702,
+        0.022582514211535454
+      ],
+      "scene": "f580af36f764575c",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 4,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 4,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09009356051683426,
+        0.10898695141077042,
+        0.036317165940999985,
+        0.019480587914586067
+      ],
+      "scene": "f5f1200c0ca75621",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08839266002178192,
+        0.123903788626194,
+        0.07157538831233978,
+        0.02268579602241516
+      ],
+      "scene": "f9360660cf125906",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09303386509418488,
+        0.1025255024433136,
+        0.04099796712398529,
+        0.014961471781134605
+      ],
+      "scene": "f938432bb4d858c1",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 14,
+      "collision": 2,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 14,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.26716500520706177,
+        0.14506016671657562,
+        0.055760644376277924,
+        0.01929006353020668
+      ],
+      "scene": "f9492f53bde257ca",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12680600583553314,
+        0.12487907707691193,
+        0.06578285992145538,
+        0.02367343381047249
+      ],
+      "scene": "f9c6794bb12a567e",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09215826541185379,
+        0.10869782418012619,
+        0.03163691237568855,
+        0.012956895865499973
+      ],
+      "scene": "fb22e6c2c06250bd",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 52,
+      "clipped_elements": 94,
+      "elements": 1536,
+      "unsafe": 22,
+      "collision": 18,
+      "clipped_unsafe": 18,
+      "unclipped_unsafe": 4,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.018627390265464783,
+        0.0014442503452301025
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10830830037593842,
+        0.09981296956539154,
+        0.03781461715698242,
+        0.015479990281164646
+      ],
+      "scene": "fbdffb67a691586a",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11713259667158127,
+        0.14483630657196045,
+        0.0645042210817337,
+        0.024424321949481964
+      ],
+      "scene": "fd7b9b8e22355c26",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10616442561149597,
+        0.10657841712236404,
+        0.04433708265423775,
+        0.017034729942679405
+      ],
+      "scene": "ffefb42af7f85a50",
+      "split": "train",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 6,
+      "clipped_elements": 6,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.12143449485301971,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07214488089084625,
+        0.085506871342659,
+        0.033469874411821365,
+        0.014409712515771389
+      ],
+      "scene": "0115609a2afb56cb",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08234762400388718,
+        0.08244159072637558,
+        0.042374387383461,
+        0.015137939713895321
+      ],
+      "scene": "077780f7790b584c",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 38,
+      "clipped_elements": 50,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.26715588569641113,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09646707773208618,
+        0.09110863506793976,
+        0.041384123265743256,
+        0.016458967700600624
+      ],
+      "scene": "216e9a7ee1315dc5",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07987146079540253,
+        0.09884738177061081,
+        0.035882677882909775,
+        0.014715059660375118
+      ],
+      "scene": "416ffd557b035087",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 3,
+      "clipped_elements": 3,
+      "elements": 1536,
+      "unsafe": 30,
+      "collision": 0,
+      "clipped_unsafe": 1,
+      "unclipped_unsafe": 29,
+      "max_abs_change_per_coordinate": [
+        0.41287708282470703,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.05185789242386818,
+        0.08001451939344406,
+        0.03729810565710068,
+        0.0163170974701643
+      ],
+      "scene": "42b5a9e3cd1e55aa",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09449036419391632,
+        0.08194924890995026,
+        0.03616452217102051,
+        0.014946693554520607
+      ],
+      "scene": "4479b27522f15370",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 4,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 4,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12659132480621338,
+        0.11613738536834717,
+        0.030556628480553627,
+        0.012460947036743164
+      ],
+      "scene": "4ae68a486e205c31",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 63,
+      "clipped_elements": 243,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.028787821531295776,
+        0.01444236934185028
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0749196857213974,
+        0.10126935690641403,
+        0.04252602159976959,
+        0.016054950654506683
+      ],
+      "scene": "5e00526ed6585cbf",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 5,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 5,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10222039371728897,
+        0.09987839311361313,
+        0.038564395159482956,
+        0.01255282387137413
+      ],
+      "scene": "6bd99d96746c54b6",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 43,
+      "clipped_elements": 70,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.34001636505126953,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09783124923706055,
+        0.09823242574930191,
+        0.03995877131819725,
+        0.01424004789441824
+      ],
+      "scene": "6dc4975ee9915cb2",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.024286899715662003,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.1669406294822693,
+        0.1314595490694046,
+        0.0392291285097599,
+        0.013595065101981163
+      ],
+      "scene": "7323e190c0e758eb",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 1,
+      "clipped_elements": 1,
+      "elements": 1536,
+      "unsafe": 4,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 4,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0028884708881378174
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.17653466761112213,
+        0.15527573227882385,
+        0.07461085915565491,
+        0.0256295595318079
+      ],
+      "scene": "792b1701f99e54eb",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.07644013315439224,
+        0.09355923533439636,
+        0.041695453226566315,
+        0.015230129472911358
+      ],
+      "scene": "8e27350e51315880",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 1,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.12728933990001678,
+        0.09370024502277374,
+        0.056406375020742416,
+        0.020633665844798088
+      ],
+      "scene": "9ec27df51fe0564f",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 2,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 2,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.09052945673465729,
+        0.0712970495223999,
+        0.03414643555879593,
+        0.01355346292257309
+      ],
+      "scene": "abffafbfb0d7531d",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.11099722236394882,
+        0.11892713606357574,
+        0.03910547494888306,
+        0.016991814598441124
+      ],
+      "scene": "beb5fc7652755542",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.17026080191135406,
+        0.13073454797267914,
+        0.042116593569517136,
+        0.01692974753677845
+      ],
+      "scene": "cd995ab567cb5874",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 49,
+      "clipped_elements": 74,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.03386799991130829,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.0689646303653717,
+        0.08515716344118118,
+        0.040388695895671844,
+        0.015387140214443207
+      ],
+      "scene": "cdbcf4ffeb735896",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 56,
+      "clipped_elements": 149,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.26715588569641113,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 63,
+      "aliased_candidates": 2,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.10099342465400696,
+        0.09573604166507721,
+        0.0394456572830677,
+        0.015272141434252262
+      ],
+      "scene": "d244a6e75d0a5dde",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 0,
+      "clipped_elements": 0,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.06319927424192429,
+        0.06929945945739746,
+        0.030212489888072014,
+        0.014152090065181255
+      ],
+      "scene": "d996748528025030",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 22,
+      "clipped_elements": 22,
+      "elements": 1536,
+      "unsafe": 1,
+      "collision": 0,
+      "clipped_unsafe": 1,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.0,
+        0.0,
+        0.010109663009643555
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    },
+    {
+      "within_scene_latent_variance_fraction_by_layer": [
+        0.08239078521728516,
+        0.07558387517929077,
+        0.04140545055270195,
+        0.01369103416800499
+      ],
+      "scene": "f03b6e3c1edd5499",
+      "split": "val",
+      "log": null,
+      "metadata_keys": [
+        "action",
+        "image",
+        "pre_1s_action",
+        "pre_1s_image",
+        "pre_1s_text",
+        "text",
+        "token"
+      ],
+      "candidates": 64,
+      "clipped_candidates": 57,
+      "clipped_elements": 150,
+      "elements": 1536,
+      "unsafe": 0,
+      "collision": 0,
+      "clipped_unsafe": 0,
+      "unclipped_unsafe": 0,
+      "max_abs_change_per_coordinate": [
+        0.26715588569641113,
+        0.0,
+        0.0
+      ],
+      "unique_token_sequences": 64,
+      "aliased_candidates": 0,
+      "conflicting_label_candidates": 0
+    }
+  ],
+  "known_log_scenes": 0,
+  "train_val_log_overlap": [],
+  "log_isolation_status": "unknown if log metadata absent; CV is scene-isolated only"
+}

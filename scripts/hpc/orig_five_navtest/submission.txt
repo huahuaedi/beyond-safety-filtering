@@ -1,0 +1,6 @@
+package=/home/huamin/orig_five_navtest_20261008_223336_21405
+run=/gpfs/accounts/xinxia_root/xinxia0/huamin/DriveVLA-W0-data/pretrained_models/DriveVLA-W0/posttrain_runs/orig_five_navtest_20261008_223336_21405
+prepare=63561267
+smoke=63561268
+eval=63561269
+report=63561274

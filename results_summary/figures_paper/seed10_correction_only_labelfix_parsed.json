@@ -1,0 +1,240 @@
+{
+  "outcome": [
+    {
+      "epoch": 0,
+      "train": 1.242026,
+      "val": 1.550827,
+      "risk": 1.526116,
+      "progress": 0.024711
+    },
+    {
+      "epoch": 1,
+      "train": 1.17213,
+      "val": 1.36853,
+      "risk": 1.344747,
+      "progress": 0.023783
+    },
+    {
+      "epoch": 2,
+      "train": 1.15037,
+      "val": 1.375564,
+      "risk": 1.351809,
+      "progress": 0.023755
+    },
+    {
+      "epoch": 3,
+      "train": 1.090257,
+      "val": 1.475359,
+      "risk": 1.451556,
+      "progress": 0.023803
+    },
+    {
+      "epoch": 4,
+      "train": 1.031647,
+      "val": 1.432598,
+      "risk": 1.409402,
+      "progress": 0.023196
+    },
+    {
+      "epoch": 5,
+      "train": 1.008089,
+      "val": 1.65319,
+      "risk": 1.630123,
+      "progress": 0.023067
+    },
+    {
+      "epoch": 6,
+      "train": 0.942683,
+      "val": 1.326583,
+      "risk": 1.304003,
+      "progress": 0.022579
+    },
+    {
+      "epoch": 7,
+      "train": 0.880538,
+      "val": 1.613072,
+      "risk": 1.589762,
+      "progress": 0.02331
+    },
+    {
+      "epoch": 8,
+      "train": 0.823342,
+      "val": 1.54434,
+      "risk": 1.52144,
+      "progress": 0.0229
+    },
+    {
+      "epoch": 9,
+      "train": 0.749916,
+      "val": 1.448453,
+      "risk": 1.425096,
+      "progress": 0.023357
+    },
+    {
+      "epoch": 10,
+      "train": 0.706907,
+      "val": 1.659035,
+      "risk": 1.636268,
+      "progress": 0.022767
+    },
+    {
+      "epoch": 11,
+      "train": 0.604636,
+      "val": 1.568117,
+      "risk": 1.545004,
+      "progress": 0.023113
+    }
+  ],
+  "warmup": [
+    {
+      "epoch": 0,
+      "loss": 0.394586,
+      "needs_correction_rate": 0.12
+    },
+    {
+      "epoch": 1,
+      "loss": 0.351799,
+      "needs_correction_rate": 0.1221
+    },
+    {
+      "epoch": 2,
+      "loss": 0.330873,
+      "needs_correction_rate": 0.12
+    },
+    {
+      "epoch": 3,
+      "loss": 0.316484,
+      "needs_correction_rate": 0.1207
+    }
+  ],
+  "rl": [
+    {
+      "epoch": 0,
+      "loss": 2.171587,
+      "train_reward": -0.031624,
+      "feasible": 0.987995,
+      "sup_weight": 1.0,
+      "needs_correction_rate": 0.1186,
+      "val_score": -5.6e-05,
+      "val_progress_gain": 1e-06,
+      "val_risk_regret": 0.0,
+      "val_physics_after": 2.8e-05,
+      "risky_risk_delta": 3e-06,
+      "risky_progress_gain": 0.0,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 1,
+      "loss": 2.238345,
+      "train_reward": -0.006832,
+      "feasible": 0.997347,
+      "sup_weight": 0.9,
+      "needs_correction_rate": 0.1208,
+      "val_score": -0.000672,
+      "val_progress_gain": 2e-06,
+      "val_risk_regret": 1e-06,
+      "val_physics_after": 0.000335,
+      "risky_risk_delta": -1e-06,
+      "risky_progress_gain": 3e-06,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 2,
+      "loss": 2.023452,
+      "train_reward": -0.008597,
+      "feasible": 0.996883,
+      "sup_weight": 0.8,
+      "needs_correction_rate": 0.12,
+      "val_score": -0.000229,
+      "val_progress_gain": -2e-06,
+      "val_risk_regret": 0.0,
+      "val_physics_after": 0.000113,
+      "risky_risk_delta": 5e-06,
+      "risky_progress_gain": 1e-06,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 3,
+      "loss": 1.805401,
+      "train_reward": -0.004708,
+      "feasible": 0.998408,
+      "sup_weight": 0.7,
+      "needs_correction_rate": 0.1195,
+      "val_score": -0.000283,
+      "val_progress_gain": 0.0,
+      "val_risk_regret": 0.0,
+      "val_physics_after": 0.000142,
+      "risky_risk_delta": 2e-06,
+      "risky_progress_gain": 1e-06,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 4,
+      "loss": 1.772286,
+      "train_reward": -0.005139,
+      "feasible": 0.998209,
+      "sup_weight": 0.6,
+      "needs_correction_rate": 0.1207,
+      "val_score": -0.000305,
+      "val_progress_gain": -2e-06,
+      "val_risk_regret": 0.0,
+      "val_physics_after": 0.00015,
+      "risky_risk_delta": -1e-06,
+      "risky_progress_gain": 0.0,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9992
+    },
+    {
+      "epoch": 5,
+      "loss": 1.681918,
+      "train_reward": -0.00485,
+      "feasible": 0.99832,
+      "sup_weight": 0.5,
+      "needs_correction_rate": 0.1182,
+      "val_score": -0.000431,
+      "val_progress_gain": -0.0,
+      "val_risk_regret": 4e-06,
+      "val_physics_after": 0.000207,
+      "risky_risk_delta": 2e-06,
+      "risky_progress_gain": 6e-06,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 6,
+      "loss": 1.468089,
+      "train_reward": -0.004366,
+      "feasible": 0.998563,
+      "sup_weight": 0.4,
+      "needs_correction_rate": 0.1203,
+      "val_score": -0.000149,
+      "val_progress_gain": -3e-06,
+      "val_risk_regret": 0.0,
+      "val_physics_after": 7.3e-05,
+      "risky_risk_delta": -1e-06,
+      "risky_progress_gain": 0.0,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9993
+    },
+    {
+      "epoch": 7,
+      "loss": 1.028126,
+      "train_reward": -0.00583,
+      "feasible": 0.997922,
+      "sup_weight": 0.3,
+      "needs_correction_rate": 0.1214,
+      "val_score": -0.000389,
+      "val_progress_gain": 1e-06,
+      "val_risk_regret": 1e-06,
+      "val_physics_after": 0.000194,
+      "risky_risk_delta": -2e-06,
+      "risky_progress_gain": 1e-06,
+      "regression_rate": 0.0,
+      "feasible_rate": 0.9997
+    }
+  ]
+}
