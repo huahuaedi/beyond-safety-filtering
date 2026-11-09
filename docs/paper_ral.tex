@@ -18,7 +18,14 @@
 \raggedbottom
 \maketitle
 \begin{abstract}
-High-scoring trajectories that pass safety checks are natural post-training targets, but candidate quality need not predict training usefulness. We study winner selection in a frozen-backbone flow-matching driving policy, holding candidates, safety gates, losers, and fitting fixed. On all NAVSIM navtest scenes under v1 scoring, all four score-winner runs introduce more failures than they repair in each of three safety components, whereas all eight geometric-winner runs show the opposite balance. At every matched seed, geometric rules exceed score selection in total and safety-component scores, with paired 95\% log-cluster intervals above zero. Random eligible winners also outperform score selection at three matched seeds: their mean advantage is 0.96 points [0.63,1.30]. Total-score differences from geometric rules remain unresolved, although geometry retains safety-component advantages. We derive winner-dependent updates and a conditional feasibility bound, and distinguish repaired failures from lost successes. Geometric-versus-score advantages persist in four-seed v2 re-scoring under non-reactive and reactive traffic, but gains over the supervised baseline remain unresolved and lane keeping declines. The results motivate evaluating supervision through downstream repair and preservation, including behavior beyond the target-verification gates.
+High-scoring trajectories that pass safety checks are natural targets for driving-policy post-training, but their quality need not translate into policy improvement. We isolate winner selection in a frozen-backbone flow-matching policy, holding candidates, safety checks, losers, and fitting fixed. On all NAVSIM navtest scenes, score-maximizing targets produce more new failures than repairs in every safety component, whereas clearance-based and nearest-reference targets reverse
+this balance. Across four matched seeds, both geometric rules improve total and safety-component scores over score selection, with paired 95\% confidence intervals excluding zero. Random eligible targets also outperform score selection by 0.96 points
+[0.63,1.30] averaged over three matched seeds, showing that this improvement does not require geometric ranking. Our analysis connects winner choice to policy updates and gives conditional requirements for preserving feasibility after fitting. The
+geometric-versus-score advantage persists under v2 re-scoring, although gains over the supervised baseline remain unresolved and lane keeping declines. These findings distinguish target
+quality from training usefulness and motivate evaluating
+post-training through both repaired failures and preserved
+successes.
+\noindent\textbf{Code:} \url{https://github.com/huahuaedi/beyond-safety-filtering}.
 \end{abstract}
 
 
@@ -29,9 +36,18 @@ This distinction matters when the reference policy already succeeds on most inpu
 
 Preference-data studies have established that the choice of training examples affects learning~\cite{sweetspot,whatmatters,correctanswers}. In driving, however, candidate acceptance and target selection are often closely coupled: simulator checks define eligible trajectories, and a score or geometric rule selects the preferred \emph{winner} over a rejected \emph{loser}. We examine the choice left after verification: \emph{among the same passing candidates, does the highest-scoring winner produce the strongest policy?} Using DriveVLA-W0~\cite{drivevla}, we hold candidates, safety gates, loser construction, and fitting fixed. Winners maximize driving score, maximize obstacle clearance, or minimize reference displacement. 
 
-\textbf{Higher-scoring verified targets need not yield better policies.} On full navtest under v1 evaluation, all four score-winner policies introduce more failures than they repair in each safety component, while all eight geometric-winner policies show the reverse (Fig.~\ref{fig:framework}). Both geometric rules exceed score selection at every matched seed, with lower progress than the score-trained policy. Their gains over supervised fine-tuning (SFT) range from 0.40 to 1.02 PDMS points. Crucially, uniformly selected eligible winners also exceed score selection at three matched seeds. Their aggregate-score differences from the geometric rules remain unresolved, while geometry retains safety-component advantages. The comparison therefore questions the highest-score target as a default, rather than establishing geometry as necessary for improvement.
+Higher-scoring verified targets need not yield better policies. On full navtest under v1 evaluation, all four score-winner policies introduce more failures than they repair in each safety component, while all eight geometric-winner policies show the reverse (Fig.~\ref{fig:framework}). Both geometric rules exceed score selection at every matched seed, with lower progress than the score-trained policy. Their gains over supervised fine-tuning (SFT) range from 0.40 to 1.02 PDMS points. Crucially, uniformly selected eligible winners also exceed score selection at three matched seeds. Their aggregate-score differences from the geometric rules remain unresolved, while geometry retains safety-component advantages. The comparison therefore questions the highest-score target as a default, rather than establishing geometry as necessary for improvement.
 
-\textbf{Improvement within the original gates is not comprehensive preservation.} The geometric-versus-score advantage persists in four-seed v2 comparisons under non-reactive and reactive traffic. Yet no tested rule has a resolved v2 total-score gain over SFT, and all lose lane-keeping performance. These outcomes motivate evaluating both failures repaired and successes lost, including behaviors not directly checked when selecting targets.
+The advantage of geometric targets over score-maximizing
+targets persists in four-seed NAVSIM v2 comparisons under
+both non-reactive and reactive traffic. However, this relative
+advantage does not establish improvement over the original
+SFT policy: total-score differences from SFT remain
+statistically unresolved, and all evaluated training rules
+reduce lane-keeping performance. These findings show why
+post-training evaluation should measure both repaired failures
+and newly introduced failures, including changes in driving
+behaviors not covered by the target-selection checks.
 
 Our analysis connects winner choice to the fitting gradient and states conditions under which target feasibility transfers to the fitted policy. A repair--regression ledger separates recovered failures from lost successes, and privileged candidate ranking on two DriveVLA-W0 variants shows how much opportunity the candidate pool contains.
 
@@ -357,20 +373,23 @@ PDMS $-$ SFT & $-0.30$ [$-0.95$, 0.29] & $-0.53$ [$-1.15$, 0.04] \\
 \textbf{Relative advantage does not establish improvement over SFT.} No rule has a resolved v2 total-score gain over SFT in either setting (reactive: +0.06 [$-0.37$,0.48] for margin and +0.13 [$-0.24$,0.51] for nearest). All four rules lose 0.55--0.67 lane-keeping points relative to SFT, and non-reactive PDMS training also reduces NC, TTC, and driving-direction compliance. These results support the relative winner contrast while exposing losses beyond the v1 verification gates.
 
 \section{Discussion}
-\subsection{Target quality is not training usefulness}
-The score rule selects the best-scoring eligible candidate but produces worse policies than either geometric rule in the matched v1 comparisons. Random eligible targets also outperform score selection: explicit geometric ranking is not necessary for that improvement. Unresolved total-score differences do not establish equivalence, however; geometric rules retain safety-component advantages over random targets. Winner rules should therefore be validated through the policies they train, against both SFT and simple selection controls.
+\subsection{Verification and supervision solve different problems}
+Verification qualifies individual trajectories; supervision changes a policy shared across scenes. Our controlled comparison shows why these decisions should be designed separately. The winner enters both direct fitting and the preference update, so identical eligibility does not imply interchangeable supervision.
 
-\subsection{Preservation and mechanism}
-The ledger shows how regressions on common successes can outweigh repairs on rare failures. V2 further exposes lane-keeping losses outside the original verification gates, despite the geometric-versus-score advantage. Evaluation must therefore test preservation beyond the criteria used to qualify targets.
+Random eligible winners sharpen this finding: improvement over maximum-score targets does not require geometric ranking. Random selection is therefore an informative baseline for verified post-training. Geometry still improves safety components over random selection at lower progress, despite unresolved total-score differences. Winner construction thus selects a behavioral trade-off, not simply a better-scoring example.
 
-The gradient derivation locates winner dependence, and the margin bound states conditions for feasibility transfer; neither predicts the empirical ordering. Clearance, displacement, and fitting-error summaries do not explain the contrast. Error alignment with constraint boundaries remains a possible explanation. Capped targets also change scene support, precluding attribution to progress restriction alone. The controlled experiment identifies a winner-rule effect under the combined objective, not separate effects of preference loss, winner fitting, and expert anchoring.
+\subsection{Training usefulness depends on transfer}
+Eq.~\eqref{eq:transfer} separates target-level improvement from transfer into policy behavior. The margin bound shows why acceptance alone is insufficient: feasibility after fitting depends jointly on target clearance and approximation error.
 
-\subsection{Scope of the evidence}
-Training uses one frozen-backbone flow policy; Multi-Anchor only tests candidate ranking. Privileged ranking quantifies opportunity with extra information, not achievable camera-policy improvement. V2 re-scores saved trajectories rather than an observing, replanning policy. Four matched seeds (three for random winners) support repetition within this recipe; log-cluster intervals condition on these policies. The random control shares one target draw, and navtest was inspected during development. Generalization to other architectures, target draws, and closed-loop execution remains untested. These offline results motivate investigating target rankings in online RL but do not establish their effects under on-policy optimization.
+The measurements challenge simple explanations. Nearest and score targets have matching clearance summaries but opposite repair balances; margin and score targets have similar mean displacement and fitted errors. These observations motivate measuring errors relative to constraint boundaries rather than only their average magnitude. Capped targets support investigating progress preference, but their changed scene support prevents isolating it. The controlled result establishes the effect of winner construction; the theory specifies what a transfer explanation must account for.
+
+\subsection{Implications for robot post-training}
+Preserving common successes can matter as much as repairing rare failures. With a 5\% failure rate, repairing 20\% of failures is canceled by regressions on about 1\% of previous successes. Reporting successful repairs alone can therefore misrepresent improvement.
+
+This suggests a practical protocol: compare winner rules against the reference and random eligible targets, separate repairs from regressions, and evaluate behavior outside the qualification gates. V2 demonstrates the value of the last step: the geometric-versus-score advantage persists while lane keeping declines. Our offline, single-family training comparison and saved-trajectory evaluation motivate these diagnostic questions for online RL and closed-loop execution without establishing their outcomes there.
 
 \section{Conclusion}
-Safety-qualified trajectories are not interchangeable as supervision. Under a fixed offline fitting recipe, changing the winner rule reverses the balance between repaired and newly introduced failures. Both geometric rules and a random-eligible control improve on score-maximizing targets in the tested v1 comparisons; explicit geometric ranking is therefore not necessary for this improvement. Geometric rules retain component-wise advantages over random targets.
-The broader finding concerns how supervision should be evaluated: through the behavior of the fitted policy, not only the quality of its targets. V2 re-scoring reinforces this distinction by retaining the geometric-versus-score advantage while exposing lane-keeping losses. Repairs, regressions, and behavior beyond the verification gates together determine whether post-training preserves existing successes while improving failures.
+Safety filtering defines acceptable candidates, not necessarily useful supervision. Under a shared fitting recipe, geometric and random eligible winners improve on maximum-score targets in the tested v1 comparisons. Geometry retains safety-component advantages over random selection and relative advantages over score selection under v2 re-scoring. The central implication is to judge supervision by the policy changes it induces: failures repaired, successes preserved, and behavior beyond verification. This makes target construction an explicit design and evaluation choice in driving post-training.
 
 \begin{thebibliography}{99}
 \bibitem{sweetspot}
@@ -410,7 +429,7 @@ B. Wallace et al., ``Diffusion model alignment using direct preference optimizat
 X. B. Peng, A. Kumar, G. Zhang, and S. Levine, ``Advantage-weighted regression: Simple and scalable off-policy reinforcement learning,'' arXiv:1910.00177, 2019.
 
 \bibitem{bond}
-P. G. Sessa et al., ``BOND: Aligning LLMs with best-of-N distillation,'' in \emph{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2025, pp. 59040--59060.
+P. G. Sessa et al., ``BOND: Aligning LLMs with best-of-N distillation,'' in \emph{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2025.
 
 \bibitem{dppo}
 A. Ren et al., ``Diffusion policy policy optimization,'' in \emph{Proc. Int. Conf. Learn. Represent. (ICLR)}, 2025.

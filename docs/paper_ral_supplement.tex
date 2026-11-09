@@ -13,16 +13,16 @@
 \renewcommand{\thetable}{S\arabic{table}}
 \renewcommand{\theequation}{S\arabic{equation}}
 \renewcommand{\thefigure}{S\arabic{figure}}
-\title{Supporting Analyses and Reproduction Notes\\\large Beyond Safety Filtering: How Training Targets Shape Driving Policy Improvement}
-\author{Min Hua and Xin Xia}
+\title{Supporting Analyses}
+
 \date{}
 \begin{document}
 \maketitle
-\noindent This document supports the main paper's distinction between candidate quality and training usefulness. Sections S1--S2 specify the protocol and transfer analysis; S3--S6 examine candidate opportunity and alternative sources of information; S7--S9 report sensitivity checks and target diagnostics. Full-navtest evaluations cover 12,146 scenes in 136 logs, with scores on a 0--100 scale unless stated otherwise. Historical cohorts and distinct inference baselines are reported separately. Essential evidence remains in the main paper.
+\noindent This document supports the main paper's distinction between candidate quality and training usefulness. Sections S1--S2 specify the protocol and transfer analysis; S3--S6 examine candidate opportunity and alternative sources of information; S7--S9 report sensitivity checks and target diagnostics. Full-navtest evaluations cover 12,146 scenes in 136 logs, with scores on a 0--100 scale unless stated otherwise. 
 
 \FloatBarrier
 \section{Shared protocol and statistical interpretation}
-The primary comparison contains twelve policies: PDMS, nearest-reference, and margin winners at seeds 20--23. The common training partition has 3,481 scenes, of which 988 provide mixed passing/failing pairs. The source pool has 7,171 scenes and 64 candidates per scene; these are not the number of preference-training pairs. Four capped policies use 860 pairs and therefore change training-scene support as well as the winner rule. The random-eligible extension reports three completed training seeds (20--22) on the standard 988 scenes, using one fixed randomly selected target set. Direct comparisons restrict all trained rules to these same three seeds.
+The primary comparison contains twelve policies: PDMS, nearest-reference, and margin winners at seeds 20--23. The common training partition has 3,481 scenes, of which 988 provide mixed passing/failing pairs. The source pool has 7,171 scenes and 64 candidates per scene; these are not the number of preference-training pairs. Four capped policies use 860 pairs and therefore change training-scene support as well as the winner rule; a same-scene control (S8) separates the two. The random-eligible extension reports three completed training seeds (20--22) on the standard 988 scenes, using one fixed randomly selected target set. Direct comparisons restrict all trained rules to these same three seeds.
 
 All standard policies use preference scale 200, winner-fitting weight 1, expert-anchor weight 0.25, learning rate $10^{-5}$, gradient accumulation of four, and caps of four epochs and 800 updates. Only the action expert is trained. Recorded configuration checks confirm the shared recipe and manifest; budget caps are not claims that every run executed 800 updates.
 
@@ -91,7 +91,7 @@ Offset $\sigma$ & Full features [95\% interval] & Trajectory + map\\\midrule
 The code draws one scene-specific planar offset from $\mathcal N(0,\sigma^2 I)$ and queries the drivable-area predicate at shifted positions. Ego pose and candidate trajectories are unchanged. Randomness is determined by scene token, noise level, and seed. Agent perturbations are drawn before the offset even in map-only mode, preserving offsets across noise-target modes. Intervals concern logs for these recorded perturbations, not repeated noise realizations.
 
 \FloatBarrier
-\section{Visual readout and alternative fitting controls}
+\section{Visual Information and Alternative Training Objectives}
 An additional readout study compares trajectory-only, pooled visual context, candidate-query cross-attention, cross-log shuffled tokens, and privileged geometry, with matched training budgets and three seeds. It uses 3,481 training scenes and partitions 3,690 held-out pool scenes by log into tuning and decision subsets. The decision subset has 1,041 scenes in 101 logs. The registered continuation rule uses candidate-query versus pooled and shuffled controls with 97.5\% log intervals and safety checks. Navtest is evaluated after locking this readout scheme; the cohort had already been inspected in other experiments, so this is not a blind confirmatory test.
 
 
@@ -116,7 +116,7 @@ Privileged geometry & +2.738 [2.324,3.224]\\\bottomrule
 The three-seed averages and log intervals are conditional on the trained readouts, not estimates of training-population uncertainty. The positive gain of the shuffled control means that improvement over the reference alone is not evidence that a readout uses scene-matched visual information. Candidate-query attention failed its registered continuation criteria; this branch was stopped. It is not evidence that larger data sets or other readout architectures cannot work.
 
 \FloatBarrier
-\section{Historical experiments on smaller cohorts}
+\section{Additional Post-Training Experiments}
 These experiments motivated the controlled target comparison, but differ in training recipes or evaluation cohorts. They cannot establish a common causal failure of reinforcement learning.
 \begin{table}[H]
 \centering\caption{Earlier policy evaluations. Values are score changes; baselines and cohorts differ from the main full-navtest study.}
@@ -176,7 +176,7 @@ PDMS, progress-capped & 860 & 4.12 & 0.572 & 0.223 & $-0.1$\\\bottomrule
 \end{tabular}
 \end{table}
 \subsection{Random eligible winners: three completed training seeds}
-The updated main manuscript reports a uniform eligible-winner control on the same training scenes and with the same loser construction and fitting recipe. One fixed selection seed defines the target set; training seeds 20--22 vary policy fitting, not the target-set draw. Their v1 gains over SFT are +0.54, +0.59, and +0.71, and same-seed gains over PDMS are +0.46 [0.07,0.84], +1.46 [1.02,1.96], and +0.96 [0.67,1.30].
+We sample one winner uniformly from each eligible set, using the same training scenes and with the same loser construction and fitting recipe. One fixed selection seed defines the target set; training seeds 20--22 vary policy fitting, not the target-set draw. Their v1 gains over SFT are +0.54, +0.59, and +0.71, and same-seed gains over PDMS are +0.46 [0.07,0.84], +1.46 [1.02,1.96], and +0.96 [0.67,1.30].
 
 \begin{table}[H]
 \centering
